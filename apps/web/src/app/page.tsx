@@ -56,7 +56,7 @@ export default function HomePage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Hauptinhalt */}
           <div className="lg:col-span-2">
-            <TaxCalculator />
+            <TaxCalculator user={user} />
           </div>
           
           {/* Sidebar */}

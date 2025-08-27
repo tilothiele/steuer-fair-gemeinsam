@@ -90,10 +90,15 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
 
           <div className="text-center">
             <p className="text-xs text-gray-500">
-              Demo-Login: Verwenden Sie eine beliebige Login-ID
+              Login-ID Anforderungen:
             </p>
-            <p className="text-xs text-gray-400 mt-1">
-              Beispiele: max.mustermann, maria.schmidt, test
+            <ul className="text-xs text-gray-400 mt-1 space-y-1">
+              <li>• Mindestens 8 Zeichen</li>
+              <li>• Alphanumerisch (Buchstaben und Zahlen)</li>
+              <li>• Oder gültige E-Mail-Adresse</li>
+            </ul>
+            <p className="text-xs text-gray-400 mt-2">
+              Beispiele: maxmustermann, testuser123, user@example.com
             </p>
           </div>
         </form>

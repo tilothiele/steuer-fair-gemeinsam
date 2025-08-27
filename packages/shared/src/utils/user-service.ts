@@ -10,26 +10,34 @@ export class UserService {
     const dummyUsers: User[] = [
       {
         id: '1',
-        loginId: 'max.mustermann',
+        loginId: 'maxmustermann',
         name: 'Max Mustermann',
-        email: 'max@example.com',
+        steuernummer: '12345678901',
         createdAt: new Date('2024-01-01'),
         lastLogin: new Date()
       },
       {
         id: '2',
-        loginId: 'maria.schmidt',
+        loginId: 'mariaschmidt',
         name: 'Maria Schmidt',
-        email: 'maria@example.com',
+        steuernummer: '98765432109',
         createdAt: new Date('2024-01-02'),
         lastLogin: new Date()
       },
       {
         id: '3',
-        loginId: 'test',
+        loginId: 'testuser123',
         name: 'Test User',
-        email: 'test@example.com',
+        steuernummer: '11122233344',
         createdAt: new Date('2024-01-03'),
+        lastLogin: new Date()
+      },
+      {
+        id: '4',
+        loginId: 'user@example.com',
+        name: 'Demo User',
+        steuernummer: '55566677788',
+        createdAt: new Date('2024-01-04'),
         lastLogin: new Date()
       }
     ];
@@ -49,6 +57,25 @@ export class UserService {
       return {
         success: false,
         error: 'Login-ID ist erforderlich'
+      };
+    }
+
+    // Validiere Login-ID Format
+    if (loginId.length < 8) {
+      return {
+        success: false,
+        error: 'Login-ID muss mindestens 8 Zeichen lang sein'
+      };
+    }
+
+    // Prüfe ob alphanumerisch oder gültige E-Mail
+    const alphanumericPattern = /^[a-zA-Z0-9]{8,}$/;
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+    if (!alphanumericPattern.test(loginId) && !emailPattern.test(loginId)) {
+      return {
+        success: false,
+        error: 'Login-ID muss alphanumerisch (mindestens 8 Zeichen) oder eine gültige E-Mail-Adresse sein'
       };
     }
 

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { TaxPartner, TaxCalculationResult, JointTaxData } from '@steuer-fair/shared';
+import { TaxPartner, TaxCalculationResult, JointTaxData, User } from '@steuer-fair/shared';
 import { TaxCalculator as TaxCalc } from '@steuer-fair/shared';
 import { TaxPartnerForm } from '../TaxInput/TaxPartnerForm';
 import { JointDataForm } from '../TaxInput/JointDataForm';
@@ -10,7 +10,11 @@ import { TaxApiService } from '../../services/api';
 import { LoadingSpinner } from '../UI/LoadingSpinner';
 import { ErrorMessage } from '../UI/ErrorMessage';
 
-export const TaxCalculator: React.FC = () => {
+interface TaxCalculatorProps {
+  user?: User;
+}
+
+export const TaxCalculator: React.FC<TaxCalculatorProps> = ({ user }) => {
   const [partnerA, setPartnerA] = useState<TaxPartner>({
     id: 'A',
     name: '',
@@ -147,26 +151,37 @@ export const TaxCalculator: React.FC = () => {
     <div className="space-y-6">
       {/* Eingabeformular */}
       <div className="card">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">
-          Steuerdaten eingeben
-        </h2>
+                  <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            Steuerdaten eingeben
+          </h2>
+          
+          {/* Steuernummer Anzeige */}
+          {user?.steuernummer && (
+            <div className="mb-4 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-gray-700">Steuernummer:</span>
+                <span className="font-mono text-gray-900">{user.steuernummer}</span>
+              </div>
+            </div>
+          )}
+          
+          {/* Veranlagungsjahr über beide Spalten */}
+          <div className="mb-6 bg-blue-50 p-4 rounded-lg border border-blue-200">
+            <label className="form-label text-lg font-medium text-blue-800">Veranlagungsjahr</label>
+            <select
+              value={year}
+              onChange={(e) => setYear(parseInt(e.target.value))}
+              className="input-field w-full bg-white"
+            >
+              {[2024, 2023, 2022, 2021, 2020].map((yearOption) => (
+                <option key={yearOption} value={yearOption}>
+                  {yearOption}
+                </option>
+              ))}
+            </select>
+          </div>
         
-        {/* Veranlagungsjahr direkt unter der Überschrift */}
-        <div className="mb-6">
-          <label className="form-label text-lg font-medium">Veranlagungsjahr</label>
-          <select
-            value={year}
-            onChange={(e) => setYear(parseInt(e.target.value))}
-            className="input-field max-w-xs"
-          >
-            {[2024, 2023, 2022, 2021, 2020].map((yearOption) => (
-              <option key={yearOption} value={yearOption}>
-                {yearOption}
-              </option>
-            ))}
-          </select>
-        </div>
-        
+        {/* Partner-Formulare in 2-spaltigem Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <TaxPartnerForm
             partner={partnerA}

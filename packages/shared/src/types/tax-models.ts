@@ -114,7 +114,7 @@ export const UserSchema = z.object({
   id: z.string(),
   loginId: z.string().min(1),
   name: z.string().optional(),
-  email: z.string().email().optional(),
+  steuernummer: z.string().optional(),
   createdAt: z.date(),
   lastLogin: z.date()
 });
@@ -123,14 +123,21 @@ export interface User {
   id: string;
   loginId: string;
   name?: string;
-  email?: string;
+  steuernummer?: string;
   createdAt: Date;
   lastLogin: Date;
 }
 
 // Login Request/Response
 export const LoginRequestSchema = z.object({
-  loginId: z.string().min(1)
+  loginId: z.string()
+    .min(8, 'Login-ID muss mindestens 8 Zeichen lang sein')
+    .refine((value) => {
+      // Erlaubt alphanumerische Zeichen oder gültige E-Mail-Adressen
+      const alphanumericPattern = /^[a-zA-Z0-9]{8,}$/;
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return alphanumericPattern.test(value) || emailPattern.test(value);
+    }, 'Login-ID muss alphanumerisch (mindestens 8 Zeichen) oder eine gültige E-Mail-Adresse sein')
 });
 
 export interface LoginRequest {
