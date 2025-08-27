@@ -109,6 +109,46 @@ export interface TaxCalculationResult {
   };
 }
 
+// User Management
+export const UserSchema = z.object({
+  id: z.string(),
+  loginId: z.string().min(1),
+  name: z.string().optional(),
+  email: z.string().email().optional(),
+  createdAt: z.date(),
+  lastLogin: z.date()
+});
+
+export interface User {
+  id: string;
+  loginId: string;
+  name?: string;
+  email?: string;
+  createdAt: Date;
+  lastLogin: Date;
+}
+
+// Login Request/Response
+export const LoginRequestSchema = z.object({
+  loginId: z.string().min(1)
+});
+
+export interface LoginRequest {
+  loginId: string;
+}
+
+export const LoginResponseSchema = z.object({
+  success: z.boolean(),
+  user: UserSchema.optional(),
+  error: z.string().optional()
+});
+
+export interface LoginResponse {
+  success: boolean;
+  user?: User;
+  error?: string;
+}
+
 // API Request/Response Schemas
 export const TaxCalculationRequestSchema = z.object({
   steuernummer: z.string().optional(),

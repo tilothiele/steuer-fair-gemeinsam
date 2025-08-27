@@ -5,6 +5,7 @@ import rateLimit from 'express-rate-limit';
 import compression from 'compression';
 import dotenv from 'dotenv';
 import { taxRoutes } from './routes/tax';
+import { authRoutes } from './routes/auth';
 import { errorHandler } from './middleware/errorHandler';
 import { requestLogger } from './middleware/requestLogger';
 import { logger } from './utils/logger';
@@ -50,6 +51,7 @@ app.get('/health', (req, res) => {
 });
 
 // API Routes
+app.use('/api/auth', authRoutes);
 app.use('/api/tax', taxRoutes);
 
 // 404 handler
