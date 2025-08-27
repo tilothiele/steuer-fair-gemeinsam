@@ -1,0 +1,35 @@
+{
+  "name": "steuer-fair-gemeinsam",
+  "version": "1.0.0",
+  "private": true,
+
+  "scripts": {
+    "dev": "concurrently \"npm run dev:web\" \"npm run dev:api\"",
+    "dev:web": "cd apps/web && npm run dev",
+    "dev:api": "cd apps/api && npm run dev",
+    "build": "npm run build:shared && npm run build:web && npm run build:api",
+    "build:shared": "cd packages/shared && npm run build",
+    "build:web": "cd apps/web && npm run build",
+    "build:api": "cd apps/api && npm run build",
+    "test": "npm run test:shared && npm run test:web && npm run test:api",
+    "test:shared": "cd packages/shared && npm test",
+    "test:web": "cd apps/web && npm test",
+    "test:api": "cd apps/api && npm test",
+    "lint": "npm run lint:shared && npm run lint:web && npm run lint:api",
+    "lint:shared": "cd packages/shared && npm run lint",
+    "lint:web": "cd apps/web && npm run lint",
+    "lint:api": "cd apps/api && npm run lint",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "setup": "npm install && npm run docker:up"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
