@@ -151,21 +151,8 @@ export const TaxCalculator: React.FC = () => {
           Steuerdaten eingeben
         </h2>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <TaxPartnerForm
-            partner={partnerA}
-            onPartnerChange={setPartnerA}
-            title="Partner A"
-          />
-          <TaxPartnerForm
-            partner={partnerB}
-            onPartnerChange={setPartnerB}
-            title="Partner B"
-          />
-        </div>
-
-        {/* Veranlagungsjahr über beide Spalten */}
-        <div className="mt-6">
+        {/* Veranlagungsjahr direkt unter der Überschrift */}
+        <div className="mb-6">
           <label className="form-label text-lg font-medium">Veranlagungsjahr</label>
           <select
             value={year}
@@ -178,6 +165,19 @@ export const TaxCalculator: React.FC = () => {
               </option>
             ))}
           </select>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <TaxPartnerForm
+            partner={partnerA}
+            onPartnerChange={setPartnerA}
+            title="Partner A"
+          />
+          <TaxPartnerForm
+            partner={partnerB}
+            onPartnerChange={setPartnerB}
+            title="Partner B"
+          />
         </div>
 
         {/* Gemeinsame Daten */}
