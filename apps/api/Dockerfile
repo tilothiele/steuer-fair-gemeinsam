@@ -17,15 +17,17 @@ RUN npm run build
 WORKDIR /app
 
 # Install dependencies for main app
-COPY package.json package-lock.json* ./
-RUN npm ci
+COPY apps/api/package.json ./
+RUN npm install
 
 # Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/packages ./packages
-COPY package.json package-lock.json* ./
+COPY apps/api/package.json ./
+COPY apps/api/ ./
+RUN rm -rf node_modules/@steuer-fair && mkdir -p node_modules/@steuer-fair && cp -r packages/shared node_modules/@steuer-fair/shared
 
 # Build the application
 RUN npm run build
