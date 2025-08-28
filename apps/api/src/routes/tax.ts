@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { TaxCalculator } from '@steuer-fair/shared';
 import { TaxCalculationRequestSchema, TaxCalculationResponse } from '@steuer-fair/shared';
 import { logger } from '../utils/logger';
+import { authenticateToken, AuthenticatedRequest } from '../middleware/auth';
 
 const router = Router();
 
@@ -9,7 +10,7 @@ const router = Router();
  * POST /api/tax/calculate
  * Berechnet die faire Aufteilung der Steuerersparnis
  */
-router.post('/calculate', async (req, res) => {
+router.post('/calculate', authenticateToken, async (req: AuthenticatedRequest, res) => {
   try {
     // Validiere Request Body
     const validatedData = TaxCalculationRequestSchema.parse(req.body);

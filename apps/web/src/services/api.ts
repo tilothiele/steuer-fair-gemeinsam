@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { TaxPartner, TaxCalculationResult, JointTaxData, User } from '@steuer-fair/shared';
+import { TaxPartner, TaxCalculationResult, JointTaxData } from '@steuer-fair/shared';
+import { getToken } from '../config/keycloak';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
@@ -12,10 +13,21 @@ const apiClient = axios.create({
   },
 });
 
-// Request Interceptor für Logging
+// Request Interceptor für Logging und Token
 apiClient.interceptors.request.use(
   (config) => {
     console.log(`API Request: ${config.method?.toUpperCase()} ${config.url}`);
+    
+    // Füge Authorization Header hinzu
+    const token = getToken();
+    console.log('Token verfügbar:', !!token);
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+      console.log('Authorization Header gesetzt');
+    } else {
+      console.warn('Kein Token verfügbar für Request:', config.url);
+    }
+    
     return config;
   },
   (error) => {
@@ -231,6 +243,7 @@ export class ProfileApiService {
         throw new Error(response.data.error || 'Profil-Update fehlgeschlagen');
       }
     } catch (error) {
+      console.error('Profil-Update Fehler:', error);
       if (error instanceof Error) {
         throw error;
       }

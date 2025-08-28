@@ -1,40 +1,51 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { User } from '@steuer-fair/shared';
 import { TaxCalculator } from '../components/TaxCalculator/TaxCalculator';
-import { LoginForm } from '../components/Auth/LoginForm';
-import { UserHeader } from '../components/Auth/UserHeader';
+import { KeycloakLogin } from '../components/Auth/KeycloakLogin';
+import { KeycloakUserHeader } from '../components/Auth/KeycloakUserHeader';
+import { initKeycloak, isAuthenticated, getUsername, getUserEmail, getLoginId } from '../config/keycloak';
 
 export default function HomePage() {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<{ id: string; loginId: string; name: string; email: string } | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Prüfe ob ein Benutzer im localStorage gespeichert ist
-    const savedUser = localStorage.getItem('steuer-fair-user');
-    if (savedUser) {
+    const initializeAuth = async () => {
       try {
-        const userData = JSON.parse(savedUser);
-        setUser(userData);
+        // Prüfe ob wir im Browser sind
+        if (typeof window === 'undefined') {
+          setLoading(false);
+          return;
+        }
+        
+        await initKeycloak();
+        
+        if (isAuthenticated()) {
+          const userData = {
+            id: 'keycloak-user',
+            loginId: getLoginId(),
+            name: getUsername(),
+            email: getUserEmail()
+          };
+          setUser(userData);
+        }
       } catch (error) {
-        console.error('Fehler beim Laden des gespeicherten Benutzers:', error);
-        localStorage.removeItem('steuer-fair-user');
+        console.error('Fehler bei der Authentifizierung:', error);
+      } finally {
+        setLoading(false);
       }
-    }
-    setLoading(false);
+    };
+
+    initializeAuth();
   }, []);
 
-  const handleLogin = (userData: User) => {
+  const handleLogin = (userData: { id: string; loginId: string; name: string; email: string }) => {
     setUser(userData);
-    // Speichere Benutzer im localStorage
-    localStorage.setItem('steuer-fair-user', JSON.stringify(userData));
   };
 
   const handleLogout = () => {
     setUser(null);
-    // Entferne Benutzer aus localStorage
-    localStorage.removeItem('steuer-fair-user');
   };
 
   if (loading) {
@@ -46,17 +57,17 @@ export default function HomePage() {
   }
 
   if (!user) {
-    return <LoginForm onLogin={handleLogin} />;
+    return <KeycloakLogin onLogin={handleLogin} />;
   }
 
   return (
     <main className="min-h-screen bg-gray-50">
-      <UserHeader user={user} onLogout={handleLogout} />
+      <KeycloakUserHeader onLogout={handleLogout} />
       <div className="max-w-6xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Hauptinhalt */}
           <div className="lg:col-span-2">
-            <TaxCalculator user={user} />
+            <TaxCalculator user={{ id: user.id, loginId: user.loginId, name: user.name, createdAt: new Date(), lastLogin: new Date() }} />
           </div>
           
           {/* Sidebar */}

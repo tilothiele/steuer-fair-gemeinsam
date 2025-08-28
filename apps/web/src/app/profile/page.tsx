@@ -1,30 +1,47 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { User } from '@steuer-fair/shared';
 import ProfileForm from '../../components/Profile/ProfileForm';
-import { UserHeader } from '../../components/Auth/UserHeader';
+import { KeycloakUserHeader } from '../../components/Auth/KeycloakUserHeader';
+import { initKeycloak, isAuthenticated, getUsername, getUserEmail, getLoginId } from '../../config/keycloak';
 
 export default function ProfilePage() {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<{ id: string; loginId: string; name: string; email: string } | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const savedUser = localStorage.getItem('steuer-fair-user');
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
-    }
-    setLoading(false);
+    const initializeAuth = async () => {
+      try {
+        await initKeycloak();
+        
+        if (isAuthenticated()) {
+          const userData = {
+            id: 'keycloak-user',
+            loginId: getLoginId(),
+            name: getUsername(),
+            email: getUserEmail()
+          };
+          setUser(userData);
+        } else {
+          window.location.href = '/';
+        }
+      } catch (error) {
+        console.error('Fehler bei der Authentifizierung:', error);
+        window.location.href = '/';
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    initializeAuth();
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('steuer-fair-user');
     window.location.href = '/';
   };
 
-  const handleProfileUpdate = (updatedUser: User) => {
+  const handleProfileUpdate = (updatedUser: { id: string; loginId: string; name: string; email: string }) => {
     setUser(updatedUser);
-    localStorage.setItem('steuer-fair-user', JSON.stringify(updatedUser));
   };
 
   if (loading) {
@@ -39,22 +56,48 @@ export default function ProfilePage() {
   }
 
   if (!user) {
-    window.location.href = '/';
     return null;
   }
 
   return (
     <main className="min-h-screen bg-gray-50">
-      <UserHeader user={user} onLogout={handleLogout} />
+      <KeycloakUserHeader onLogout={handleLogout} />
       
       <div className="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Mein Profil
-          </h1>
-          <p className="text-gray-600">
-            Verwalten Sie Ihre persönlichen Daten und Steuerinformationen
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                Mein Profil
+              </h1>
+              <p className="text-gray-600">
+                Verwalten Sie Ihre persönlichen Daten und Steuerinformationen
+              </p>
+            </div>
+            <div className="flex space-x-3">
+              <a 
+                href="/" 
+                className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Zurück zur Hauptseite
+              </a>
+              <a 
+                href="https://auth.swingdog.home64.de/realms/TTSOFT/account/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center px-4 py-2 border border-blue-300 rounded-md shadow-sm text-sm font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                Keycloak Profil
+              </a>
+            </div>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

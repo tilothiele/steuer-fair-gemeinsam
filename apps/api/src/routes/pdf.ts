@@ -2,8 +2,8 @@ import { Router } from 'express';
 import { PdfService } from '../services/pdf-service';
 import { TaxCalculationRequestSchema } from '@steuer-fair/shared';
 import { TaxCalculator } from '@steuer-fair/shared';
-import { UserRepository } from '../repositories/user-repository';
 import { logger } from '../utils/logger';
+import { authenticateToken, AuthenticatedRequest } from '../middleware/auth';
 
 const router = Router();
 
@@ -11,7 +11,7 @@ const router = Router();
  * POST /api/pdf/download
  * Generiert eine PDF der Steuerberechnung
  */
-router.post('/download', async (req, res) => {
+router.post('/download', authenticateToken, async (req: AuthenticatedRequest, res) => {
   try {
     // Validiere Request Body
     const validationResult = TaxCalculationRequestSchema.safeParse(req.body);
@@ -24,10 +24,10 @@ router.post('/download', async (req, res) => {
       });
     }
 
-    const { partnerA, partnerB, jointData, year, userId } = validationResult.data;
+    const { partnerA, partnerB, jointData, year } = validationResult.data;
 
-    // Hole Benutzerdaten für PDF
-    const user = await UserRepository.findByLoginId(userId);
+    // Verwende Benutzerdaten aus Token
+    const user = req.user;
 
     // Führe die echte Steuerberechnung durch
     const result = TaxCalculator.calculateFairSplit(partnerA, partnerB, jointData);
@@ -39,8 +39,8 @@ router.post('/download', async (req, res) => {
       jointData,
       result,
       year,
-      userId,
-      user?.steuernummer,
+      user?.id || 'unknown',
+      undefined, // steuernummer
       user?.name
     );
 
@@ -52,7 +52,7 @@ router.post('/download', async (req, res) => {
     // Sende PDF
     res.send(pdfBuffer);
 
-    logger.info('PDF erfolgreich heruntergeladen', { userId, year });
+    logger.info('PDF erfolgreich heruntergeladen', { userId: user?.id, year });
   } catch (error) {
     logger.error('Fehler beim PDF-Download:', error);
     res.status(500).json({

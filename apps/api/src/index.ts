@@ -4,14 +4,15 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import compression from 'compression';
 import dotenv from 'dotenv';
+import session from 'express-session';
 import { taxRoutes } from './routes/tax';
-import { authRoutes } from './routes/auth';
 import { profileRoutes } from './routes/profile';
 import { taxDataRoutes } from './routes/tax-data';
 import { pdfRoutes } from './routes/pdf';
 import { errorHandler } from './middleware/errorHandler';
 import { requestLogger } from './middleware/requestLogger';
 import { logger } from './utils/logger';
+import { sessionConfig, keycloak } from './config/keycloak';
 
 // Load environment variables
 dotenv.config();
@@ -41,6 +42,12 @@ app.use(compression());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
+// Session configuration
+app.use(session(sessionConfig));
+
+// Keycloak middleware
+app.use(keycloak.middleware());
+
 // Request logging
 app.use(requestLogger);
 
@@ -54,7 +61,6 @@ app.get('/health', (req, res) => {
 });
 
 // API Routes
-app.use('/api/auth', authRoutes);
 app.use('/api/tax', taxRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/tax-data', taxDataRoutes);

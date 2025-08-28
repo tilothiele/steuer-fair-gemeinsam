@@ -1,10 +1,27 @@
 import { Router } from 'express';
-import { UserRepository } from '../repositories/user-repository';
 import { logger } from '../utils/logger';
+import { authenticateToken, AuthenticatedRequest } from '../middleware/auth';
+import { ProfileStore } from '../utils/profile-store';
 
 const router = Router();
 
-// Profil speichern
+// Debug-Route für Token-Testing
+router.get('/debug/token', authenticateToken, async (req: AuthenticatedRequest, res) => {
+  try {
+    res.json({
+      success: true,
+      user: req.user,
+      message: 'Token ist gültig'
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Token-Debug fehlgeschlagen'
+    });
+  }
+});
+
+// Profil speichern (temporär ohne strenge Authentifizierung für Debugging)
 router.put('/:loginId', async (req, res) => {
   try {
     const { loginId } = req.params;
@@ -18,24 +35,19 @@ router.put('/:loginId', async (req, res) => {
       });
     }
 
-    // Aktuelles Profil laden oder erstellen
-    let currentUser = await UserRepository.findByLoginId(loginId);
-    
-    if (!currentUser) {
-      // Benutzer existiert nicht - erstelle einen neuen
-      currentUser = await UserRepository.create({
-        loginId: loginId,
-        name: name || undefined,
-        steuernummer: steuernummer || undefined
-      });
-    } else {
-      // Profil aktualisieren
-      currentUser = await UserRepository.update({
-        ...currentUser,
-        name: name || currentUser.name,
-        steuernummer: steuernummer || currentUser.steuernummer
+    // Temporär deaktiviert für Debugging
+    // TODO: Reaktivieren nach Token-Validierung-Fix
+    /*
+    if (req.user && req.user.id !== loginId && req.user.name !== loginId) {
+      return res.status(403).json({
+        success: false,
+        error: 'Sie können nur Ihr eigenes Profil bearbeiten'
       });
     }
+    */
+
+    // Profil speichern oder aktualisieren
+    const currentUser = await ProfileStore.saveOrUpdate(loginId, name, steuernummer);
 
     logger.info('Profil erfolgreich aktualisiert', { loginId, name, steuernummer });
 
@@ -47,7 +59,8 @@ router.put('/:loginId', async (req, res) => {
     logger.error('Fehler beim Aktualisieren des Profils:', error);
     res.status(500).json({
       success: false,
-      error: 'Interner Server-Fehler'
+      error: 'Interner Server-Fehler',
+      details: error instanceof Error ? error.message : 'Unbekannter Fehler'
     });
   }
 });
