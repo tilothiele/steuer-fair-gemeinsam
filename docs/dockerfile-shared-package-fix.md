@@ -74,6 +74,15 @@ RUN npm ci
 
 ### **4. Main App Build**
 ```dockerfile
+# Rebuild the source code only when needed
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/packages ./packages
+COPY --from=deps /app/package.json ./package.json
+COPY --from=deps /app/package-lock.json ./package-lock.json
+COPY . .
+
 # Build the application
 RUN npm run build
 ```
@@ -90,7 +99,8 @@ RUN npm run build
 2. **Shared Package Dependencies installieren**
 3. **Shared Package bauen**
 4. **Main App Dependencies installieren**
-5. **Main App bauen**
+5. **Main App Dependencies in builder-Stage kopieren**
+6. **Main App bauen**
 
 ### ✅ **Monorepo-Support**
 - Shared Package wird korrekt behandelt
@@ -224,7 +234,13 @@ CMD ["node", "server.js"]
 - ✅ Stellen Sie sicher, dass `npm ci` im shared Verzeichnis ausgeführt wird
 - ✅ Prüfen Sie die Build-Reihenfolge
 
+### **Next.js nicht gefunden**
+- ✅ Prüfen Sie, ob die node_modules korrekt kopiert werden
+- ✅ Stellen Sie sicher, dass package.json in builder-Stage kopiert wird
+- ✅ Prüfen Sie die Build-Reihenfolge
+
 ### **Build-Reihenfolge**
 - ✅ Shared Package wird vor der Main App gebaut
 - ✅ Dependencies werden in der richtigen Reihenfolge installiert
 - ✅ Build-Kontext ist korrekt gesetzt
+- ✅ node_modules werden in builder-Stage kopiert
