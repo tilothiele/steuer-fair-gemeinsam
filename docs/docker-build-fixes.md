@@ -115,6 +115,7 @@ RUN npm ci
 - Korrekte Behandlung der lokalen Packages
 - Wiederverwendbare shared Komponenten
 - Einheitliche Build-Umgebung
+- Moderne ENV-Syntax (`key=value` statt `key value`)
 
 ## Nächste Schritte
 

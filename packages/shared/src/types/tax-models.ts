@@ -128,7 +128,7 @@ export interface User {
 export const LoginRequestSchema = z.object({
   loginId: z.string()
     .min(8, 'Login-ID muss mindestens 8 Zeichen lang sein')
-    .refine((value) => {
+    .refine((value: string) => {
       // Erlaubt alphanumerische Zeichen oder gültige E-Mail-Adressen
       const alphanumericPattern = /^[a-zA-Z0-9]{8,}$/;
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

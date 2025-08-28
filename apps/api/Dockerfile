@@ -12,6 +12,11 @@ COPY packages/shared ./packages/shared
 COPY package.json package-lock.json* ./
 RUN npm ci
 
+# Build shared package
+WORKDIR /app/packages/shared
+RUN npm run build
+WORKDIR /app
+
 # Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
@@ -26,7 +31,7 @@ RUN npm run build
 FROM base AS runner
 WORKDIR /app
 
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nodejs
@@ -39,6 +44,6 @@ USER nodejs
 
 EXPOSE 3001
 
-ENV PORT 3001
+ENV PORT=3001
 
 CMD ["node", "dist/index.js"]
