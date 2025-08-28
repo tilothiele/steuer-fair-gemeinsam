@@ -6,6 +6,9 @@ import compression from 'compression';
 import dotenv from 'dotenv';
 import { taxRoutes } from './routes/tax';
 import { authRoutes } from './routes/auth';
+import { profileRoutes } from './routes/profile';
+import { taxDataRoutes } from './routes/tax-data';
+import { pdfRoutes } from './routes/pdf';
 import { errorHandler } from './middleware/errorHandler';
 import { requestLogger } from './middleware/requestLogger';
 import { logger } from './utils/logger';
@@ -53,6 +56,9 @@ app.get('/health', (req, res) => {
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/tax', taxRoutes);
+app.use('/api/profile', profileRoutes);
+app.use('/api/tax-data', taxDataRoutes);
+app.use('/api/pdf', pdfRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {

@@ -10,19 +10,19 @@ export const TaxPartnerSchema = z.object({
   name: z.string().optional(),
   steuerId: z.string().optional(),
   // Eingabewerte für Steuerberechnung
-  sek: z.number().min(0), // Steuerpflichtiges Einkommen
-  taxClass: z.number().min(1).max(6), // Steuerklasse
-  allowances: z.number().min(0), // Werbungskosten
-  specialExpenses: z.number().min(0), // Sonderausgaben
-  extraordinaryExpenses: z.number().min(0), // Außergewöhnliche Belastungen
-  childAllowance: z.number().min(0), // Kinderfreibetrag
+  sek: z.coerce.number().min(0), // Steuerpflichtiges Einkommen
+  taxClass: z.coerce.number().min(1).max(6), // Steuerklasse
+  allowances: z.coerce.number().min(0), // Werbungskosten
+  specialExpenses: z.coerce.number().min(0), // Sonderausgaben
+  extraordinaryExpenses: z.coerce.number().min(0), // Außergewöhnliche Belastungen
+  childAllowance: z.coerce.number().min(0), // Kinderfreibetrag
   // Berechnete Werte (werden automatisch ermittelt)
-  fee: z.number().min(0), // Festgesetzte Einkommensteuer bei Einzelveranlagung
-  fse: z.number().min(0), // Festgesetzter Soli bei Einzelveranlagung
+  fee: z.coerce.number().min(0), // Festgesetzte Einkommensteuer bei Einzelveranlagung
+  fse: z.coerce.number().min(0), // Festgesetzter Soli bei Einzelveranlagung
   // Bereits gezahlte Beträge
-  gl: z.number().min(0),  // Bereits gezahlte Lohn-/Einkommensteuer
-  gve: z.number().min(0), // Bereits gezahlte Vorauszahlung für Einkommensteuer
-  gs: z.number().min(0)   // Bereits gezahlter Soli
+  gl: z.coerce.number().min(0),  // Bereits gezahlte Lohn-/Einkommensteuer
+  gve: z.coerce.number().min(0), // Bereits gezahlte Vorauszahlung für Einkommensteuer
+  gs: z.coerce.number().min(0)   // Bereits gezahlter Soli
 });
 
 export interface TaxPartner {
@@ -48,10 +48,10 @@ export interface TaxPartner {
 // Gemeinsame Werte Schema
 export const JointTaxDataSchema = z.object({
   // Eingabewerte für gemeinsame Steuerberechnung
-  gsek: z.number().min(0), // Gemeinsames steuerpflichtiges Einkommen
+  gsek: z.coerce.number().min(0), // Gemeinsames steuerpflichtiges Einkommen
   // Berechnete Werte (werden automatisch ermittelt)
-  gfe: z.number().min(0),  // Gemeinsame festgesetzte Einkommensteuer
-  gfs: z.number().min(0)   // Gemeinsamer festgesetzter Soli
+  gfe: z.coerce.number().min(0),  // Gemeinsame festgesetzte Einkommensteuer
+  gfs: z.coerce.number().min(0)   // Gemeinsamer festgesetzter Soli
 });
 
 export interface JointTaxData {
@@ -67,22 +67,22 @@ export const TaxCalculationResultSchema = z.object({
   plausibilityCheck: z.boolean(),
   plausibilityError: z.string().optional(),
   // Berechnete Faktoren
-  factorA: z.number(),
-  factorB: z.number(),
+  factorA: z.coerce.number(),
+  factorB: z.coerce.number(),
   // Gemeinsame zu zahlende Steuer
-  gzz: z.number(), // GFE + GFS
+  gzz: z.coerce.number(), // GFE + GFS
   // Ergebnisse für jeden Partner
   partnerA: z.object({
-    hätteZahlenMüssen: z.number(), // FEE + FSE
-    mussNunZahlen: z.number(),     // FaktorA * GZZ
-    hatGezahlt: z.number(),        // GL + GVE + GS
-    differenz: z.number()          // MNZ - HG
+    hätteZahlenMüssen: z.coerce.number(), // FEE + FSE
+    mussNunZahlen: z.coerce.number(),     // FaktorA * GZZ
+    hatGezahlt: z.coerce.number(),        // GL + GVE + GS
+    differenz: z.coerce.number()          // MNZ - HG
   }),
   partnerB: z.object({
-    hätteZahlenMüssen: z.number(), // FEE + FSE
-    mussNunZahlen: z.number(),     // FaktorB * GZZ
-    hatGezahlt: z.number(),        // GL + GVE + GS
-    differenz: z.number()          // MNZ - HG
+    hätteZahlenMüssen: z.coerce.number(), // FEE + FSE
+    mussNunZahlen: z.coerce.number(),     // FaktorB * GZZ
+    hatGezahlt: z.coerce.number(),        // GL + GVE + GS
+    differenz: z.coerce.number()          // MNZ - HG
   })
 });
 
@@ -158,14 +158,16 @@ export interface LoginResponse {
 
 // API Request/Response Schemas
 export const TaxCalculationRequestSchema = z.object({
+  userId: z.string(),
   steuernummer: z.string().optional(),
   partnerA: TaxPartnerSchema,
   partnerB: TaxPartnerSchema,
   jointData: JointTaxDataSchema,
-  year: z.number().int().min(2020).max(2030)
+  year: z.coerce.number().int().min(2020).max(2030)
 });
 
 export interface TaxCalculationRequest {
+  userId: string;
   steuernummer?: string;
   partnerA: TaxPartner;
   partnerB: TaxPartner;

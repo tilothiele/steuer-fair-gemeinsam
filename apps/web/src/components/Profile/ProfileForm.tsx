@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { User } from '@steuer-fair/shared';
+import { ProfileApiService } from '../../services/api';
 
 interface ProfileFormProps {
   user: User;
@@ -25,14 +26,12 @@ export default function ProfileForm({ user, onProfileUpdate }: ProfileFormProps)
     setMessage(null);
 
     try {
-      const updatedUser = {
-        ...user,
-        name: name.trim() || undefined,
-        steuernummer: steuernummer.trim() || undefined
-      };
+      const updatedUser = await ProfileApiService.updateProfile(
+        user.loginId,
+        name.trim() || undefined,
+        steuernummer.trim() || undefined
+      );
 
-      // Hier würde normalerweise ein API-Call stehen
-      // Für jetzt simulieren wir das Update
       onProfileUpdate(updatedUser);
       
       setMessage({ type: 'success', text: 'Profil erfolgreich aktualisiert!' });
@@ -42,7 +41,10 @@ export default function ProfileForm({ user, onProfileUpdate }: ProfileFormProps)
         setMessage(null);
       }, 3000);
     } catch (error) {
-      setMessage({ type: 'error', text: 'Fehler beim Aktualisieren des Profils' });
+      setMessage({ 
+        type: 'error', 
+        text: error instanceof Error ? error.message : 'Fehler beim Aktualisieren des Profils' 
+      });
     } finally {
       setIsLoading(false);
     }

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { TaxPartner, TaxCalculationResult, JointTaxData } from '@steuer-fair/shared';
+import { TaxPartner, TaxCalculationResult, JointTaxData, User } from '@steuer-fair/shared';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
@@ -71,7 +71,8 @@ export class TaxApiService {
     partnerA: TaxPartner,
     partnerB: TaxPartner,
     jointData: JointTaxData,
-    year: number
+    year: number,
+    userId: string
   ): Promise<TaxCalculationResult> {
     try {
       const response = await apiClient.post('/api/tax/calculate', {
@@ -79,12 +80,67 @@ export class TaxApiService {
         partnerB,
         jointData,
         year,
+        userId,
       });
 
       if (response.data.success && response.data.data) {
         return response.data.data;
       } else {
         throw new Error(response.data.error || 'Berechnung fehlgeschlagen');
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error('Ein unbekannter Fehler ist aufgetreten');
+    }
+  }
+
+  /**
+   * Speichert Steuerdaten
+   */
+  static async saveTaxData(
+    partnerA: TaxPartner,
+    partnerB: TaxPartner,
+    jointData: JointTaxData,
+    year: number,
+    loginId: string
+  ): Promise<void> {
+    try {
+      const response = await apiClient.post('/api/tax-data/save', {
+        userId: loginId, // Verwende loginId als userId für die API
+        partnerA,
+        partnerB,
+        jointData,
+        year,
+      });
+
+      if (!response.data.success) {
+        throw new Error(response.data.error || 'Speichern fehlgeschlagen');
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error('Ein unbekannter Fehler ist aufgetreten');
+    }
+  }
+
+  /**
+   * Lädt Steuerdaten
+   */
+  static async loadTaxData(loginId: string, year: number): Promise<{
+    partnerA: TaxPartner;
+    partnerB: TaxPartner;
+    jointData: JointTaxData;
+  } | null> {
+    try {
+      const response = await apiClient.get(`/api/tax-data/${loginId}/${year}`);
+
+      if (response.data.success) {
+        return response.data.data;
+      } else {
+        throw new Error(response.data.error || 'Laden fehlgeschlagen');
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -117,6 +173,68 @@ export class TaxApiService {
     } catch (error) {
       console.error('Health Check fehlgeschlagen:', error);
       throw error;
+    }
+  }
+
+  /**
+   * Lädt PDF der Steuerberechnung herunter
+   */
+  static async downloadPdf(
+    partnerA: TaxPartner,
+    partnerB: TaxPartner,
+    jointData: JointTaxData,
+    year: number,
+    loginId: string
+  ): Promise<void> {
+    try {
+      const response = await apiClient.post('/api/pdf/download', {
+        userId: loginId,
+        partnerA,
+        partnerB,
+        jointData,
+        year,
+      }, {
+        responseType: 'blob'
+      });
+
+      // Erstelle Download-Link
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `steuerberechnung-${year}-${loginId}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('PDF-Download fehlgeschlagen:', error);
+      throw new Error('PDF-Download fehlgeschlagen');
+    }
+  }
+}
+
+export class ProfileApiService {
+  /**
+   * Aktualisiert das Benutzerprofil
+   */
+  static async updateProfile(loginId: string, name?: string, steuernummer?: string): Promise<User> {
+    try {
+      const response = await apiClient.put(`/api/profile/${loginId}`, {
+        name,
+        steuernummer,
+      });
+
+      if (response.data.success && response.data.user) {
+        return response.data.user;
+      } else {
+        throw new Error(response.data.error || 'Profil-Update fehlgeschlagen');
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error('Ein unbekannter Fehler ist aufgetreten');
     }
   }
 }

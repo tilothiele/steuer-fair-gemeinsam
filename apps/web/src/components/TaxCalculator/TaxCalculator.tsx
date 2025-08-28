@@ -9,6 +9,7 @@ import { TaxCalculationResult as TaxResultComponent } from './TaxCalculationResu
 import { TaxApiService } from '../../services/api';
 import { LoadingSpinner } from '../UI/LoadingSpinner';
 import { ErrorMessage } from '../UI/ErrorMessage';
+import { Calculator, Save, FileDown } from 'lucide-react';
 
 interface TaxCalculatorProps {
   user?: User;
@@ -91,11 +92,16 @@ export const TaxCalculator: React.FC<TaxCalculatorProps> = ({ user }) => {
       jointData.gsek]);
 
   const handleCalculate = async () => {
+    if (!user) {
+      setError('Benutzer nicht angemeldet');
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
     try {
-      const calculationResult = await TaxApiService.calculateTax(partnerA, partnerB, jointData, year);
+      const calculationResult = await TaxApiService.calculateTax(partnerA, partnerB, jointData, year, user.id);
       setResult(calculationResult);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Ein Fehler ist aufgetreten');
@@ -103,6 +109,85 @@ export const TaxCalculator: React.FC<TaxCalculatorProps> = ({ user }) => {
       setLoading(false);
     }
   };
+
+  const handleSave = async () => {
+    if (!user) {
+      setError('Benutzer nicht angemeldet');
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+              await TaxApiService.saveTaxData(partnerA, partnerB, jointData, year, user.loginId);
+      setError(null);
+      // Optional: Erfolgsmeldung anzeigen
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Fehler beim Speichern');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Lade Daten beim Jahrwechsel
+  useEffect(() => {
+    if (user) {
+      const loadData = async () => {
+        try {
+          const savedData = await TaxApiService.loadTaxData(user.loginId, year);
+          if (savedData) {
+            setPartnerA(savedData.partnerA);
+            setPartnerB(savedData.partnerB);
+            setJointData(savedData.jointData);
+          } else {
+            // Keine Daten für dieses Jahr - Formular zurücksetzen
+            setPartnerA({
+              id: 'A',
+              name: '',
+              steuerId: '',
+              sek: 0,
+              taxClass: 1,
+              allowances: 0,
+              specialExpenses: 0,
+              extraordinaryExpenses: 0,
+              childAllowance: 0,
+              fee: 0,
+              fse: 0,
+              gl: 0,
+              gve: 0,
+              gs: 0
+            });
+            setPartnerB({
+              id: 'B',
+              name: '',
+              steuerId: '',
+              sek: 0,
+              taxClass: 1,
+              allowances: 0,
+              specialExpenses: 0,
+              extraordinaryExpenses: 0,
+              childAllowance: 0,
+              fee: 0,
+              fse: 0,
+              gl: 0,
+              gve: 0,
+              gs: 0
+            });
+            setJointData({
+              gsek: 0,
+              gfe: 0,
+              gfs: 0
+            });
+          }
+        } catch (err) {
+          console.error('Fehler beim Laden der Daten:', err);
+        }
+      };
+
+      loadData();
+    }
+  }, [year, user]);
 
   const handleReset = () => {
     setPartnerA({
@@ -145,6 +230,35 @@ export const TaxCalculator: React.FC<TaxCalculatorProps> = ({ user }) => {
     setYear(2024);
     setResult(null);
     setError(null);
+  };
+
+  const handlePdfDownload = async () => {
+    if (!user) {
+      setError('Benutzer nicht angemeldet');
+      return;
+    }
+
+    if (!partnerA.sek && !partnerB.sek) {
+      setError('Bitte geben Sie mindestens ein steuerpflichtiges Einkommen ein');
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      await TaxApiService.downloadPdf(
+        partnerA,
+        partnerB,
+        jointData,
+        year,
+        user.loginId
+      );
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'PDF-Download fehlgeschlagen');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -205,6 +319,21 @@ export const TaxCalculator: React.FC<TaxCalculatorProps> = ({ user }) => {
 
         <div className="flex gap-4 mt-6">
           <button
+            onClick={handleSave}
+            disabled={loading}
+            className="btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? (
+              <>
+                <LoadingSpinner className="w-4 h-4 mr-2" />
+                Speichere...
+              </>
+            ) : (
+              'Speichern'
+            )}
+          </button>
+          
+          <button
             onClick={handleCalculate}
             disabled={loading}
             className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
@@ -224,6 +353,24 @@ export const TaxCalculator: React.FC<TaxCalculatorProps> = ({ user }) => {
             className="btn-secondary"
           >
             Zurücksetzen
+          </button>
+          
+          <button
+            onClick={handlePdfDownload}
+            disabled={loading || (!partnerA.sek && !partnerB.sek)}
+            className="btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? (
+              <>
+                <LoadingSpinner className="w-4 h-4 mr-2" />
+                Generiere PDF...
+              </>
+            ) : (
+              <>
+                <FileDown className="w-4 h-4 mr-2" />
+                PDF Download
+              </>
+            )}
           </button>
         </div>
 

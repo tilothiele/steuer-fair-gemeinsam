@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { UserService } from '@steuer-fair/shared';
 import { LoginRequestSchema } from '@steuer-fair/shared';
+import { UserRepository } from '../repositories/user-repository';
 import { logger } from '../utils/logger';
 
 const router = Router();
@@ -17,34 +18,32 @@ router.post('/login', async (req, res) => {
     // Validiere Request Body
     const validatedData = LoginRequestSchema.parse(req.body);
     
-    // Führe Login durch
-    const result = UserService.login(validatedData);
-
-    if (result.success && result.user) {
-      // Log erfolgreichen Login
-      logger.info({
-        message: 'Benutzer erfolgreich angemeldet',
-        loginId: result.user.loginId,
-        userId: result.user.id
-      });
-
-      res.json({
-        success: true,
-        user: result.user
+    // Prüfe ob Benutzer in der Datenbank existiert
+    let user = await UserRepository.findByLoginId(validatedData.loginId);
+    
+    if (!user) {
+      // Erstelle neuen Benutzer
+      user = await UserRepository.create({
+        loginId: validatedData.loginId,
+        name: undefined,
+        steuernummer: undefined
       });
     } else {
-      // Log fehlgeschlagenen Login
-      logger.warn({
-        message: 'Login fehlgeschlagen',
-        loginId: validatedData.loginId,
-        error: result.error
-      });
-
-      res.status(400).json({
-        success: false,
-        error: result.error || 'Login fehlgeschlagen'
-      });
+      // Aktualisiere last_login
+      await UserRepository.updateLastLogin(user.id);
     }
+
+    // Log erfolgreichen Login
+    logger.info({
+      message: 'Benutzer erfolgreich angemeldet',
+      loginId: user.loginId,
+      userId: user.id
+    });
+
+    res.json({
+      success: true,
+      user: user
+    });
   } catch (error) {
     logger.error({
       message: 'Fehler beim Login',

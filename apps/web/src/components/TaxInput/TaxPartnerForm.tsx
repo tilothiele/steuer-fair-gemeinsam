@@ -71,7 +71,7 @@ export const TaxPartnerForm: React.FC<TaxPartnerFormProps> = ({
         <label className="form-label">Steuerklasse</label>
         <select
           value={partner.taxClass || 1}
-          onChange={(e) => handleChange('taxClass', parseInt(e.target.value))}
+          onChange={(e) => handleChange('taxClass', parseInt(e.target.value) || 1)}
           className="input-field"
         >
           <option value={1}>Steuerklasse 1</option>
