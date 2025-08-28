@@ -43,7 +43,7 @@ jobs:
       - name: Build and push API image
         uses: docker/build-push-action@v5
         with:
-          context: ./apps/api
+          context: .
           file: ./apps/api/Dockerfile
           push: true
           tags: ${{ env.DOCKERHUB_USERNAME }}/steuer-fair-api:${{ github.event.release.tag_name }}
@@ -54,13 +54,13 @@ jobs:
       - name: Build and push Web image
         uses: docker/build-push-action@v5
         with:
-          context: ./apps/web
+          context: .
           file: ./apps/web/Dockerfile
           push: true
           tags: ${{ env.DOCKERHUB_USERNAME }}/steuer-fair-web:${{ github.event.release.tag_name }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-to: type=gha
 
       - name: Create summary
         run: |
