@@ -8,14 +8,17 @@ WORKDIR /app
 # Copy shared package first
 COPY packages/shared ./packages/shared
 
-# Install dependencies based on the preferred package manager
-COPY package.json package-lock.json* ./
+# Install dependencies for shared package
+WORKDIR /app/packages/shared
 RUN npm ci
 
 # Build shared package
-WORKDIR /app/packages/shared
 RUN npm run build
 WORKDIR /app
+
+# Install dependencies for main app
+COPY package.json package-lock.json* ./
+RUN npm ci
 
 # Rebuild the source code only when needed
 FROM base AS builder
