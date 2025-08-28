@@ -46,7 +46,7 @@ router.post('/download', authenticateToken, async (req: AuthenticatedRequest, re
 
     // Setze Response Headers für PDF-Download
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="steuerberechnung-${year}-${userId}.pdf"`);
+    res.setHeader('Content-Disposition', `attachment; filename="steuerberechnung-${year}-${user?.id || 'unknown'}.pdf"`);
     res.setHeader('Content-Length', pdfBuffer.length);
 
     // Sende PDF

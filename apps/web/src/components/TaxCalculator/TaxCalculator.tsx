@@ -146,10 +146,6 @@ export const TaxCalculator: React.FC<TaxCalculatorProps> = ({ user }) => {
               steuerId: '',
               sek: 0,
               taxClass: 1,
-              allowances: 0,
-              specialExpenses: 0,
-              extraordinaryExpenses: 0,
-              childAllowance: 0,
               fee: 0,
               fse: 0,
               gl: 0,
@@ -162,10 +158,6 @@ export const TaxCalculator: React.FC<TaxCalculatorProps> = ({ user }) => {
               steuerId: '',
               sek: 0,
               taxClass: 1,
-              allowances: 0,
-              specialExpenses: 0,
-              extraordinaryExpenses: 0,
-              childAllowance: 0,
               fee: 0,
               fse: 0,
               gl: 0,
@@ -175,7 +167,8 @@ export const TaxCalculator: React.FC<TaxCalculatorProps> = ({ user }) => {
             setJointData({
               gsek: 0,
               gfe: 0,
-              gfs: 0
+              gfs: 0,
+              calculationMode: 'manual'
             });
           }
         } catch (err) {

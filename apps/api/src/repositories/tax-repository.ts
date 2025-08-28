@@ -43,10 +43,6 @@ export class TaxRepository {
           steuerId: row.partner_a_steuer_id || '',
           sek: parseFloat(row.partner_a_sek) || 0,
           taxClass: row.partner_a_tax_class || 1,
-          allowances: parseFloat(row.partner_a_allowances) || 0,
-          specialExpenses: parseFloat(row.partner_a_special_expenses) || 0,
-          extraordinaryExpenses: parseFloat(row.partner_a_extraordinary_expenses) || 0,
-          childAllowance: parseFloat(row.partner_a_child_allowance) || 0,
           fee: parseFloat(row.partner_a_fee) || 0,
           fse: parseFloat(row.partner_a_fse) || 0,
           gl: parseFloat(row.partner_a_gl) || 0,
@@ -59,10 +55,6 @@ export class TaxRepository {
           steuerId: row.partner_b_steuer_id || '',
           sek: parseFloat(row.partner_b_sek) || 0,
           taxClass: row.partner_b_tax_class || 1,
-          allowances: parseFloat(row.partner_b_allowances) || 0,
-          specialExpenses: parseFloat(row.partner_b_special_expenses) || 0,
-          extraordinaryExpenses: parseFloat(row.partner_b_extraordinary_expenses) || 0,
-          childAllowance: parseFloat(row.partner_b_child_allowance) || 0,
           fee: parseFloat(row.partner_b_fee) || 0,
           fse: parseFloat(row.partner_b_fse) || 0,
           gl: parseFloat(row.partner_b_gl) || 0,
@@ -72,7 +64,8 @@ export class TaxRepository {
         jointData: {
           gsek: parseFloat(row.joint_gsek) || 0,
           gfe: parseFloat(row.joint_gfe) || 0,
-          gfs: parseFloat(row.joint_gfs) || 0
+          gfs: parseFloat(row.joint_gfs) || 0,
+          calculationMode: row.calculation_mode || 'manual'
         },
         createdAt: row.created_at,
         updatedAt: row.updated_at
@@ -100,16 +93,14 @@ export class TaxRepository {
         `INSERT INTO tax_data (
           user_id, tax_year,
           partner_a_name, partner_a_steuer_id, partner_a_sek, partner_a_tax_class,
-          partner_a_allowances, partner_a_special_expenses, partner_a_extraordinary_expenses,
-          partner_a_child_allowance, partner_a_fee, partner_a_fse, partner_a_gl, partner_a_gve, partner_a_gs,
+          partner_a_fee, partner_a_fse, partner_a_gl, partner_a_gve, partner_a_gs,
           partner_b_name, partner_b_steuer_id, partner_b_sek, partner_b_tax_class,
-          partner_b_allowances, partner_b_special_expenses, partner_b_extraordinary_expenses,
-          partner_b_child_allowance, partner_b_fee, partner_b_fse, partner_b_gl, partner_b_gve, partner_b_gs,
-          joint_gsek, joint_gfe, joint_gfs
+          partner_b_fee, partner_b_fse, partner_b_gl, partner_b_gve, partner_b_gs,
+          joint_gsek, joint_gfe, joint_gfs, calculation_mode
         ) VALUES (
-          $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15,
-          $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28,
-          $29, $30, $31
+          $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11,
+          $12, $13, $14, $15, $16, $17, $18, $19, $20,
+          $21, $22, $23, $24
         )
         ON CONFLICT (user_id, tax_year)
         DO UPDATE SET
@@ -117,10 +108,6 @@ export class TaxRepository {
           partner_a_steuer_id = EXCLUDED.partner_a_steuer_id,
           partner_a_sek = EXCLUDED.partner_a_sek,
           partner_a_tax_class = EXCLUDED.partner_a_tax_class,
-          partner_a_allowances = EXCLUDED.partner_a_allowances,
-          partner_a_special_expenses = EXCLUDED.partner_a_special_expenses,
-          partner_a_extraordinary_expenses = EXCLUDED.partner_a_extraordinary_expenses,
-          partner_a_child_allowance = EXCLUDED.partner_a_child_allowance,
           partner_a_fee = EXCLUDED.partner_a_fee,
           partner_a_fse = EXCLUDED.partner_a_fse,
           partner_a_gl = EXCLUDED.partner_a_gl,
@@ -130,10 +117,6 @@ export class TaxRepository {
           partner_b_steuer_id = EXCLUDED.partner_b_steuer_id,
           partner_b_sek = EXCLUDED.partner_b_sek,
           partner_b_tax_class = EXCLUDED.partner_b_tax_class,
-          partner_b_allowances = EXCLUDED.partner_b_allowances,
-          partner_b_special_expenses = EXCLUDED.partner_b_special_expenses,
-          partner_b_extraordinary_expenses = EXCLUDED.partner_b_extraordinary_expenses,
-          partner_b_child_allowance = EXCLUDED.partner_b_child_allowance,
           partner_b_fee = EXCLUDED.partner_b_fee,
           partner_b_fse = EXCLUDED.partner_b_fse,
           partner_b_gl = EXCLUDED.partner_b_gl,
@@ -142,17 +125,16 @@ export class TaxRepository {
           joint_gsek = EXCLUDED.joint_gsek,
           joint_gfe = EXCLUDED.joint_gfe,
           joint_gfs = EXCLUDED.joint_gfs,
+          calculation_mode = EXCLUDED.calculation_mode,
           updated_at = CURRENT_TIMESTAMP
         RETURNING *`,
         [
           user.id, taxData.year,
           taxData.partnerA.name, taxData.partnerA.steuerId, taxData.partnerA.sek, taxData.partnerA.taxClass,
-          taxData.partnerA.allowances, taxData.partnerA.specialExpenses, taxData.partnerA.extraordinaryExpenses,
-          taxData.partnerA.childAllowance, taxData.partnerA.fee, taxData.partnerA.fse, taxData.partnerA.gl, taxData.partnerA.gve, taxData.partnerA.gs,
+          taxData.partnerA.fee, taxData.partnerA.fse, taxData.partnerA.gl, taxData.partnerA.gve, taxData.partnerA.gs,
           taxData.partnerB.name, taxData.partnerB.steuerId, taxData.partnerB.sek, taxData.partnerB.taxClass,
-          taxData.partnerB.allowances, taxData.partnerB.specialExpenses, taxData.partnerB.extraordinaryExpenses,
-          taxData.partnerB.childAllowance, taxData.partnerB.fee, taxData.partnerB.fse, taxData.partnerB.gl, taxData.partnerB.gve, taxData.partnerB.gs,
-          taxData.jointData.gsek, taxData.jointData.gfe, taxData.jointData.gfs
+          taxData.partnerB.fee, taxData.partnerB.fse, taxData.partnerB.gl, taxData.partnerB.gve, taxData.partnerB.gs,
+          taxData.jointData.gsek, taxData.jointData.gfe, taxData.jointData.gfs, taxData.jointData.calculationMode
         ]
       );
       
@@ -167,10 +149,6 @@ export class TaxRepository {
           steuerId: row.partner_a_steuer_id || '',
           sek: parseFloat(row.partner_a_sek) || 0,
           taxClass: row.partner_a_tax_class || 1,
-          allowances: parseFloat(row.partner_a_allowances) || 0,
-          specialExpenses: parseFloat(row.partner_a_special_expenses) || 0,
-          extraordinaryExpenses: parseFloat(row.partner_a_extraordinary_expenses) || 0,
-          childAllowance: parseFloat(row.partner_a_child_allowance) || 0,
           fee: parseFloat(row.partner_a_fee) || 0,
           fse: parseFloat(row.partner_a_fse) || 0,
           gl: parseFloat(row.partner_a_gl) || 0,
@@ -183,10 +161,6 @@ export class TaxRepository {
           steuerId: row.partner_b_steuer_id || '',
           sek: parseFloat(row.partner_b_sek) || 0,
           taxClass: row.partner_b_tax_class || 1,
-          allowances: parseFloat(row.partner_b_allowances) || 0,
-          specialExpenses: parseFloat(row.partner_b_special_expenses) || 0,
-          extraordinaryExpenses: parseFloat(row.partner_b_extraordinary_expenses) || 0,
-          childAllowance: parseFloat(row.partner_b_child_allowance) || 0,
           fee: parseFloat(row.partner_b_fee) || 0,
           fse: parseFloat(row.partner_b_fse) || 0,
           gl: parseFloat(row.partner_b_gl) || 0,
@@ -196,7 +170,8 @@ export class TaxRepository {
         jointData: {
           gsek: parseFloat(row.joint_gsek) || 0,
           gfe: parseFloat(row.joint_gfe) || 0,
-          gfs: parseFloat(row.joint_gfs) || 0
+          gfs: parseFloat(row.joint_gfs) || 0,
+          calculationMode: row.calculation_mode || 'manual'
         },
         createdAt: row.created_at,
         updatedAt: row.updated_at

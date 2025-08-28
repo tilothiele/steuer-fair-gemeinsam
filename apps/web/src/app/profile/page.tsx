@@ -4,9 +4,10 @@ import { useState, useEffect } from 'react';
 import ProfileForm from '../../components/Profile/ProfileForm';
 import { KeycloakUserHeader } from '../../components/Auth/KeycloakUserHeader';
 import { initKeycloak, isAuthenticated, getUsername, getUserEmail, getLoginId } from '../../config/keycloak';
+import { User } from '@steuer-fair/shared';
 
 export default function ProfilePage() {
-  const [user, setUser] = useState<{ id: string; loginId: string; name: string; email: string } | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -15,11 +16,13 @@ export default function ProfilePage() {
         await initKeycloak();
         
         if (isAuthenticated()) {
-          const userData = {
+          const userData: User = {
             id: 'keycloak-user',
             loginId: getLoginId(),
             name: getUsername(),
-            email: getUserEmail()
+            steuernummer: undefined,
+            createdAt: new Date(),
+            lastLogin: new Date()
           };
           setUser(userData);
         } else {
@@ -40,7 +43,7 @@ export default function ProfilePage() {
     window.location.href = '/';
   };
 
-  const handleProfileUpdate = (updatedUser: { id: string; loginId: string; name: string; email: string }) => {
+  const handleProfileUpdate = (updatedUser: User) => {
     setUser(updatedUser);
   };
 

@@ -13,6 +13,8 @@ Der Docker Build schlug fehl mit TypeScript-Fehlern:
 1. **Shared Package nicht gebaut**: Das shared Package wurde nicht kompiliert, bevor die Apps es verwenden
 2. **TypeScript-Konfiguration**: Fehlende `moduleResolution` in tsconfig.json
 3. **Implizite any-Typen**: Parameter in Zod refine-Funktion hatte keinen expliziten Typ
+4. **API-Komponenten veraltet**: API-Code verwendete noch die entfernten Felder (allowances, specialExpenses, etc.)
+5. **Interface-Konflikte**: Namenskonflikte zwischen Komponenten und Typen
 
 ## Lösung
 
@@ -109,6 +111,41 @@ WORKDIR /app
 }, 'Login-ID muss alphanumerisch...')
 ```
 
+### **4. API-Komponenten aktualisiert**
+
+**TaxRepository (API):**
+- ✅ **Entfernte Felder**: allowances, specialExpenses, extraordinaryExpenses, childAllowance
+- ✅ **Hinzugefügt**: calculationMode zu JointTaxData
+- ✅ **SQL-Queries**: Aktualisiert für neue Struktur
+- ✅ **Return-Objekte**: Angepasst an neue Typen
+
+**PDF-Service (API):**
+- ✅ **Entfernte Felder**: Werbungskosten, Sonderausgaben, etc. aus PDF-Template
+- ✅ **Variable-Fix**: `userId` → `user?.id` in pdf.ts
+
+**PDF-Route (API):**
+- ✅ **Variable-Fix**: `userId` → `user?.id || 'unknown'`
+
+### **5. Web-Komponenten aktualisiert**
+
+**Profile Page:**
+- ✅ **User-Interface**: Angepasst an shared Package User-Typ
+- ✅ **Import**: User-Typ aus @steuer-fair/shared importiert
+- ✅ **State-Management**: Korrekte Typisierung
+
+**TaxCalculator:**
+- ✅ **Entfernte Felder**: allowances, specialExpenses, etc. aus Initialisierung
+- ✅ **calculationMode**: Hinzugefügt zu JointTaxData
+- ✅ **Reset-Funktion**: Aktualisiert
+
+**TaxCalculationResult:**
+- ✅ **Namenskonflikt**: `TaxCalculationResult as TaxCalculationResultType`
+- ✅ **Interface**: Korrekte Typisierung
+
+**API Service:**
+- ✅ **Import**: User-Typ hinzugefügt
+- ✅ **Methoden**: Korrekte Rückgabetypen
+
 ## Build-Prozess
 
 ### **1. Shared Package Build**
@@ -148,6 +185,17 @@ npm run build
 - Vollständiger Build-Prozess
 - Korrekte Reihenfolge der Build-Schritte
 - Wiederverwendbare shared Komponenten
+- Moderne ENV-Syntax (`key=value` statt `key value`)
+
+### ✅ **API-Konsistenz**
+- Alle Komponenten verwenden die gleichen Typen
+- Keine veralteten Felder mehr
+- Korrekte Datenbank-Interaktion
+
+### ✅ **Web-Konsistenz**
+- Einheitliche User-Interfaces
+- Korrekte Typisierung in allen Komponenten
+- Keine Namenskonflikte
 
 ## Nächste Schritte
 
@@ -171,3 +219,13 @@ npm run build
 - ✅ Shared Package wird vor den Apps gebaut
 - ✅ Dependencies werden korrekt installiert
 - ✅ Build-Kontext ist korrekt gesetzt
+
+### **API-Komponenten**
+- ✅ Alle veralteten Felder entfernt
+- ✅ calculationMode hinzugefügt
+- ✅ SQL-Queries aktualisiert
+
+### **Web-Komponenten**
+- ✅ User-Interface konsistent
+- ✅ Namenskonflikte behoben
+- ✅ Korrekte Typisierung

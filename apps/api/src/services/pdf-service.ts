@@ -234,22 +234,7 @@ export class PdfService {
                 <span class="label">Steuerklasse:</span>
                 <span class="value">${partnerA.taxClass}</span>
               </div>
-              <div class="data-row">
-                <span class="label">Werbungskosten:</span>
-                <span class="value">${formatCurrency(partnerA.allowances)}</span>
-              </div>
-              <div class="data-row">
-                <span class="label">Sonderausgaben:</span>
-                <span class="value">${formatCurrency(partnerA.specialExpenses)}</span>
-              </div>
-              <div class="data-row">
-                <span class="label">Außergewöhnliche Belastungen:</span>
-                <span class="value">${formatCurrency(partnerA.extraordinaryExpenses)}</span>
-              </div>
-              <div class="data-row">
-                <span class="label">Kinderfreibetrag:</span>
-                <span class="value">${formatCurrency(partnerA.childAllowance)}</span>
-              </div>
+
               <div class="data-row">
                 <span class="label">Festgesetzte Einkommensteuer:</span>
                 <span class="value">${formatCurrency(partnerA.fee)}</span>
@@ -290,22 +275,7 @@ export class PdfService {
                 <span class="label">Steuerklasse:</span>
                 <span class="value">${partnerB.taxClass}</span>
               </div>
-              <div class="data-row">
-                <span class="label">Werbungskosten:</span>
-                <span class="value">${formatCurrency(partnerB.allowances)}</span>
-              </div>
-              <div class="data-row">
-                <span class="label">Sonderausgaben:</span>
-                <span class="value">${formatCurrency(partnerB.specialExpenses)}</span>
-              </div>
-              <div class="data-row">
-                <span class="label">Außergewöhnliche Belastungen:</span>
-                <span class="value">${formatCurrency(partnerB.extraordinaryExpenses)}</span>
-              </div>
-              <div class="data-row">
-                <span class="label">Kinderfreibetrag:</span>
-                <span class="value">${formatCurrency(partnerB.childAllowance)}</span>
-              </div>
+
               <div class="data-row">
                 <span class="label">Festgesetzte Einkommensteuer:</span>
                 <span class="value">${formatCurrency(partnerB.fee)}</span>

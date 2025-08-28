@@ -1,12 +1,12 @@
 'use client';
 
 import React from 'react';
-import { TaxCalculationResult, TaxPartner, JointTaxData } from '@steuer-fair/shared';
+import { TaxCalculationResult as TaxCalculationResultType, TaxPartner, JointTaxData } from '@steuer-fair/shared';
 import { formatCurrency } from '../../utils/formatters';
 import { Download, BarChart3 } from 'lucide-react';
 
 interface TaxCalculationResultProps {
-  result: TaxCalculationResult;
+  result: TaxCalculationResultType;
   partnerA: TaxPartner;
   partnerB: TaxPartner;
   jointData: JointTaxData;

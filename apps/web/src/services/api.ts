@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { TaxPartner, TaxCalculationResult, JointTaxData } from '@steuer-fair/shared';
+import { TaxPartner, TaxCalculationResult, JointTaxData, User } from '@steuer-fair/shared';
 import { getToken } from '../config/keycloak';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
