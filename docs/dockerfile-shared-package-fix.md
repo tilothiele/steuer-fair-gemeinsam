@@ -79,9 +79,7 @@ FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/packages ./packages
-COPY --from=deps /app/package.json ./package.json
-COPY --from=deps /app/package-lock.json ./package-lock.json
-COPY . .
+COPY package.json package-lock.json* ./
 
 # Build the application
 RUN npm run build
@@ -100,7 +98,8 @@ RUN npm run build
 3. **Shared Package bauen**
 4. **Main App Dependencies installieren**
 5. **Main App Dependencies in builder-Stage kopieren**
-6. **Main App bauen**
+6. **Main App package.json in builder-Stage kopieren**
+7. **Main App bauen**
 
 ### ✅ **Monorepo-Support**
 - Shared Package wird korrekt behandelt
@@ -236,7 +235,7 @@ CMD ["node", "server.js"]
 
 ### **Next.js nicht gefunden**
 - ✅ Prüfen Sie, ob die node_modules korrekt kopiert werden
-- ✅ Stellen Sie sicher, dass package.json in builder-Stage kopiert wird
+- ✅ Stellen Sie sicher, dass package.json direkt kopiert wird (nicht aus deps-Stage)
 - ✅ Prüfen Sie die Build-Reihenfolge
 
 ### **Build-Reihenfolge**
