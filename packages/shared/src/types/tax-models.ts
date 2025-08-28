@@ -12,10 +12,6 @@ export const TaxPartnerSchema = z.object({
   // Eingabewerte für Steuerberechnung
   sek: z.coerce.number().min(0), // Steuerpflichtiges Einkommen
   taxClass: z.coerce.number().min(1).max(6), // Steuerklasse
-  allowances: z.coerce.number().min(0), // Werbungskosten
-  specialExpenses: z.coerce.number().min(0), // Sonderausgaben
-  extraordinaryExpenses: z.coerce.number().min(0), // Außergewöhnliche Belastungen
-  childAllowance: z.coerce.number().min(0), // Kinderfreibetrag
   // Berechnete Werte (werden automatisch ermittelt)
   fee: z.coerce.number().min(0), // Festgesetzte Einkommensteuer bei Einzelveranlagung
   fse: z.coerce.number().min(0), // Festgesetzter Soli bei Einzelveranlagung
@@ -32,10 +28,6 @@ export interface TaxPartner {
   // Eingabewerte für Steuerberechnung
   sek: number; // Steuerpflichtiges Einkommen
   taxClass: number; // Steuerklasse
-  allowances: number; // Werbungskosten
-  specialExpenses: number; // Sonderausgaben
-  extraordinaryExpenses: number; // Außergewöhnliche Belastungen
-  childAllowance: number; // Kinderfreibetrag
   // Berechnete Werte (werden automatisch ermittelt)
   fee: number; // Festgesetzte Einkommensteuer bei Einzelveranlagung
   fse: number; // Festgesetzter Soli bei Einzelveranlagung
@@ -51,7 +43,9 @@ export const JointTaxDataSchema = z.object({
   gsek: z.coerce.number().min(0), // Gemeinsames steuerpflichtiges Einkommen
   // Berechnete Werte (werden automatisch ermittelt)
   gfe: z.coerce.number().min(0),  // Gemeinsame festgesetzte Einkommensteuer
-  gfs: z.coerce.number().min(0)   // Gemeinsamer festgesetzter Soli
+  gfs: z.coerce.number().min(0),  // Gemeinsamer festgesetzter Soli
+  // Berechnungsmodus
+  calculationMode: z.enum(['manual', 'calculated']).default('manual') // 'manual' oder 'calculated'
 });
 
 export interface JointTaxData {
@@ -59,7 +53,9 @@ export interface JointTaxData {
   gsek: number; // Gemeinsames steuerpflichtiges Einkommen
   // Berechnete Werte (werden automatisch ermittelt)
   gfe: number;  // Gemeinsame festgesetzte Einkommensteuer
-  gfs: number   // Gemeinsamer festgesetzter Soli
+  gfs: number;  // Gemeinsamer festgesetzter Soli
+  // Berechnungsmodus
+  calculationMode: 'manual' | 'calculated' // 'manual' oder 'calculated'
 }
 
 // Steuerberechnungsergebnis Schema (korrekte Berechnung)

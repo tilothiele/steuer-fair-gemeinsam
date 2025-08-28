@@ -7,12 +7,14 @@ interface TaxPartnerFormProps {
   partner: TaxPartner;
   onPartnerChange: (partner: TaxPartner) => void;
   title: string;
+  calculationMode: 'manual' | 'calculated';
 }
 
 export const TaxPartnerForm: React.FC<TaxPartnerFormProps> = ({
   partner,
   onPartnerChange,
-  title
+  title,
+  calculationMode
 }) => {
   const handleChange = (field: keyof TaxPartner, value: string | number) => {
     onPartnerChange({
@@ -83,77 +85,13 @@ export const TaxPartnerForm: React.FC<TaxPartnerFormProps> = ({
         </select>
       </div>
 
-      {/* Werbungskosten */}
-      <div>
-        <label className="form-label">Werbungskosten (€)</label>
-        <input
-          type="number"
-          value={partner.allowances || ''}
-          onChange={(e) => handleChange('allowances', parseFloat(e.target.value) || 0)}
-          placeholder="0"
-          min="0"
-          step="0.01"
-          className="input-field"
-        />
-        <p className="text-xs text-gray-500 mt-1">
-          Fahrtkosten, Arbeitsmittel, etc.
-        </p>
-      </div>
 
-      {/* Sonderausgaben */}
-      <div>
-        <label className="form-label">Sonderausgaben (€)</label>
-        <input
-          type="number"
-          value={partner.specialExpenses || ''}
-          onChange={(e) => handleChange('specialExpenses', parseFloat(e.target.value) || 0)}
-          placeholder="0"
-          min="0"
-          step="0.01"
-          className="input-field"
-        />
-        <p className="text-xs text-gray-500 mt-1">
-          Kirchensteuer, Versicherungen, etc.
-        </p>
-      </div>
 
-      {/* Außergewöhnliche Belastungen */}
-      <div>
-        <label className="form-label">Außergewöhnliche Belastungen (€)</label>
-        <input
-          type="number"
-          value={partner.extraordinaryExpenses || ''}
-          onChange={(e) => handleChange('extraordinaryExpenses', parseFloat(e.target.value) || 0)}
-          placeholder="0"
-          min="0"
-          step="0.01"
-          className="input-field"
-        />
-        <p className="text-xs text-gray-500 mt-1">
-          Krankheitskosten, etc.
-        </p>
-      </div>
-
-      {/* Kinderfreibetrag */}
-      <div>
-        <label className="form-label">Kinderfreibetrag (€)</label>
-        <input
-          type="number"
-          value={partner.childAllowance || ''}
-          onChange={(e) => handleChange('childAllowance', parseFloat(e.target.value) || 0)}
-          placeholder="0"
-          min="0"
-          step="0.01"
-          className="input-field"
-        />
-        <p className="text-xs text-gray-500 mt-1">
-          Pro Kind: 8.952€ (2024)
-        </p>
-      </div>
-
-      {/* Berechnete Werte - Nur Anzeige */}
+      {/* Festgesetzte Werte */}
       <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-        <h4 className="text-sm font-medium text-green-800 mb-3">Berechnete Werte (automatisch)</h4>
+        <h4 className="text-sm font-medium text-green-800 mb-3">
+          {calculationMode === 'manual' ? 'Festgesetzte Werte (manuell eingeben)' : 'Berechnete Werte (automatisch)'}
+        </h4>
         
         <div className="space-y-3">
           {/* Festgesetzte Einkommensteuer */}
@@ -161,12 +99,19 @@ export const TaxPartnerForm: React.FC<TaxPartnerFormProps> = ({
             <label className="form-label text-green-800">Festgesetzte Einkommensteuer (€)</label>
             <input
               type="number"
-              value={partner.fee || 0}
-              readOnly
-              className="input-field bg-white text-green-800 font-medium"
+              value={partner.fee || ''}
+              onChange={(e) => handleChange('fee', parseFloat(e.target.value) || 0)}
+              placeholder="0"
+              min="0"
+              step="0.01"
+              disabled={calculationMode === 'calculated'}
+              className={`input-field bg-white ${calculationMode === 'calculated' ? 'opacity-50 cursor-not-allowed' : ''}`}
             />
             <p className="text-xs text-green-600 mt-1">
-              Bei Einzelveranlagung (automatisch berechnet)
+              {calculationMode === 'manual' 
+                ? 'Bei Einzelveranlagung (aus Steuerbescheid)' 
+                : 'Bei Einzelveranlagung (automatisch berechnet)'
+              }
             </p>
           </div>
 
@@ -175,62 +120,20 @@ export const TaxPartnerForm: React.FC<TaxPartnerFormProps> = ({
             <label className="form-label text-green-800">Festgesetzter Soli (€)</label>
             <input
               type="number"
-              value={partner.fse || 0}
-              readOnly
-              className="input-field bg-white text-green-800 font-medium"
+              value={partner.fse || ''}
+              onChange={(e) => handleChange('fse', parseFloat(e.target.value) || 0)}
+              placeholder="0"
+              min="0"
+              step="0.01"
+              disabled={calculationMode === 'calculated'}
+              className={`input-field bg-white ${calculationMode === 'calculated' ? 'opacity-50 cursor-not-allowed' : ''}`}
             />
             <p className="text-xs text-green-600 mt-1">
-              Bei Einzelveranlagung (automatisch berechnet)
+              {calculationMode === 'manual' 
+                ? 'Bei Einzelveranlagung (aus Steuerbescheid)' 
+                : 'Bei Einzelveranlagung (automatisch berechnet)'
+              }
             </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Bereits gezahlte Beträge - Gemeinsame farblich abgesetzte Fläche */}
-      <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-        <h4 className="text-sm font-medium text-blue-800 mb-3">Bereits gezahlte Beträge</h4>
-        
-        <div className="space-y-3">
-          {/* Bereits gezahlte Lohnsteuer */}
-          <div>
-            <label className="form-label text-blue-800">Bereits gezahlte Lohnsteuer (€)</label>
-            <input
-              type="number"
-              value={partner.gl || ''}
-              onChange={(e) => handleChange('gl', parseFloat(e.target.value) || 0)}
-              placeholder="0"
-              min="0"
-              step="0.01"
-              className="input-field bg-white"
-            />
-          </div>
-
-          {/* Bereits gezahlte Vorauszahlung */}
-          <div>
-            <label className="form-label text-blue-800">Bereits gezahlte Vorauszahlung (€)</label>
-            <input
-              type="number"
-              value={partner.gve || ''}
-              onChange={(e) => handleChange('gve', parseFloat(e.target.value) || 0)}
-              placeholder="0"
-              min="0"
-              step="0.01"
-              className="input-field bg-white"
-            />
-          </div>
-
-          {/* Bereits gezahlter Soli */}
-          <div>
-            <label className="form-label text-blue-800">Bereits gezahlter Soli (€)</label>
-            <input
-              type="number"
-              value={partner.gs || ''}
-              onChange={(e) => handleChange('gs', parseFloat(e.target.value) || 0)}
-              placeholder="0"
-              min="0"
-              step="0.01"
-              className="input-field bg-white"
-            />
           </div>
         </div>
       </div>

@@ -6,11 +6,13 @@ import { JointTaxData } from '@steuer-fair/shared';
 interface JointDataFormProps {
   jointData: JointTaxData;
   onJointDataChange: (jointData: JointTaxData) => void;
+  calculationMode: 'manual' | 'calculated';
 }
 
 export const JointDataForm: React.FC<JointDataFormProps> = ({
   jointData,
-  onJointDataChange
+  onJointDataChange,
+  calculationMode
 }) => {
   const handleChange = (field: keyof JointTaxData, value: number) => {
     onJointDataChange({
@@ -44,9 +46,11 @@ export const JointDataForm: React.FC<JointDataFormProps> = ({
         </div>
       </div>
 
-      {/* Berechnete gemeinsame Werte - Nur Anzeige */}
+      {/* Gemeinsame festgesetzte Werte */}
       <div className="bg-green-50 p-4 rounded-lg border border-green-200 mt-4">
-        <h4 className="text-sm font-medium text-green-800 mb-3">Berechnete gemeinsame Werte (automatisch)</h4>
+        <h4 className="text-sm font-medium text-green-800 mb-3">
+          {calculationMode === 'manual' ? 'Gemeinsame festgesetzte Werte (manuell eingeben)' : 'Berechnete gemeinsame Werte (automatisch)'}
+        </h4>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Gemeinsame festgesetzte Einkommensteuer */}
@@ -54,12 +58,19 @@ export const JointDataForm: React.FC<JointDataFormProps> = ({
             <label className="form-label text-green-800">Gemeinsame festgesetzte Einkommensteuer (€)</label>
             <input
               type="number"
-              value={jointData.gfe || 0}
-              readOnly
-              className="input-field bg-white text-green-800 font-medium"
+              value={jointData.gfe || ''}
+              onChange={(e) => handleChange('gfe', parseFloat(e.target.value) || 0)}
+              placeholder="0"
+              min="0"
+              step="0.01"
+              disabled={calculationMode === 'calculated'}
+              className={`input-field bg-white ${calculationMode === 'calculated' ? 'opacity-50 cursor-not-allowed' : ''}`}
             />
             <p className="text-xs text-green-600 mt-1">
-              Bei gemeinsamer Veranlagung (automatisch berechnet)
+              {calculationMode === 'manual' 
+                ? 'Bei gemeinsamer Veranlagung (aus Steuerbescheid)' 
+                : 'Bei gemeinsamer Veranlagung (automatisch berechnet)'
+              }
             </p>
           </div>
 
@@ -68,12 +79,19 @@ export const JointDataForm: React.FC<JointDataFormProps> = ({
             <label className="form-label text-green-800">Gemeinsamer festgesetzter Soli (€)</label>
             <input
               type="number"
-              value={jointData.gfs || 0}
-              readOnly
-              className="input-field bg-white text-green-800 font-medium"
+              value={jointData.gfs || ''}
+              onChange={(e) => handleChange('gfs', parseFloat(e.target.value) || 0)}
+              placeholder="0"
+              min="0"
+              step="0.01"
+              disabled={calculationMode === 'calculated'}
+              className={`input-field bg-white ${calculationMode === 'calculated' ? 'opacity-50 cursor-not-allowed' : ''}`}
             />
             <p className="text-xs text-green-600 mt-1">
-              Bei gemeinsamer Veranlagung (automatisch berechnet)
+              {calculationMode === 'manual' 
+                ? 'Bei gemeinsamer Veranlagung (aus Steuerbescheid)' 
+                : 'Bei gemeinsamer Veranlagung (automatisch berechnet)'
+              }
             </p>
           </div>
         </div>

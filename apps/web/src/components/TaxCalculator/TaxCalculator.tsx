@@ -5,6 +5,9 @@ import { TaxPartner, TaxCalculationResult, JointTaxData, User } from '@steuer-fa
 import { TaxCalculator as TaxCalc } from '@steuer-fair/shared';
 import { TaxPartnerForm } from '../TaxInput/TaxPartnerForm';
 import { JointDataForm } from '../TaxInput/JointDataForm';
+import { CalculationModeToggle } from '../TaxInput/CalculationModeToggle';
+import { PaidAmountsForm } from '../TaxInput/PaidAmountsForm';
+import { CalculatedValuesForm } from '../TaxInput/CalculatedValuesForm';
 import { TaxCalculationResult as TaxResultComponent } from './TaxCalculationResult';
 import { TaxApiService } from '../../services/api';
 import { LoadingSpinner } from '../UI/LoadingSpinner';
@@ -22,10 +25,6 @@ export const TaxCalculator: React.FC<TaxCalculatorProps> = ({ user }) => {
     steuerId: '',
     sek: 0,
     taxClass: 1,
-    allowances: 0,
-    specialExpenses: 0,
-    extraordinaryExpenses: 0,
-    childAllowance: 0,
     fee: 0,
     fse: 0,
     gl: 0,
@@ -39,10 +38,6 @@ export const TaxCalculator: React.FC<TaxCalculatorProps> = ({ user }) => {
     steuerId: '',
     sek: 0,
     taxClass: 1,
-    allowances: 0,
-    specialExpenses: 0,
-    extraordinaryExpenses: 0,
-    childAllowance: 0,
     fee: 0,
     fse: 0,
     gl: 0,
@@ -53,8 +48,11 @@ export const TaxCalculator: React.FC<TaxCalculatorProps> = ({ user }) => {
   const [jointData, setJointData] = useState<JointTaxData>({
     gsek: 0,
     gfe: 0,
-    gfs: 0
+    gfs: 0,
+    calculationMode: 'manual'
   });
+
+  const [calculationMode, setCalculationMode] = useState<'manual' | 'calculated'>('manual');
 
   const [year, setYear] = useState<number>(2024);
 
@@ -62,34 +60,34 @@ export const TaxCalculator: React.FC<TaxCalculatorProps> = ({ user }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Automatische Berechnung der Steuern bei Änderung der Eingabewerte
+  // Automatische Berechnung der Steuern bei Änderung der Eingabewerte (nur im calculated Mode)
   useEffect(() => {
-    // Berechne Steuern für Partner A
-    const partnerATaxes = TaxCalc.calculateIndividualTax(partnerA);
-    setPartnerA(prev => ({
-      ...prev,
-      fee: partnerATaxes.fee,
-      fse: partnerATaxes.fse
-    }));
+    if (calculationMode === 'calculated') {
+      // Berechne Steuern für Partner A
+      const partnerATaxes = TaxCalc.calculateIndividualTax(partnerA);
+      setPartnerA(prev => ({
+        ...prev,
+        fee: partnerATaxes.fee,
+        fse: partnerATaxes.fse
+      }));
 
-    // Berechne Steuern für Partner B
-    const partnerBTaxes = TaxCalc.calculateIndividualTax(partnerB);
-    setPartnerB(prev => ({
-      ...prev,
-      fee: partnerBTaxes.fee,
-      fse: partnerBTaxes.fse
-    }));
+      // Berechne Steuern für Partner B
+      const partnerBTaxes = TaxCalc.calculateIndividualTax(partnerB);
+      setPartnerB(prev => ({
+        ...prev,
+        fee: partnerBTaxes.fee,
+        fse: partnerBTaxes.fse
+      }));
 
-    // Berechne gemeinsame Steuern
-    const jointTaxes = TaxCalc.calculateJointTax(jointData);
-    setJointData(prev => ({
-      ...prev,
-      gfe: jointTaxes.gfe,
-      gfs: jointTaxes.gfs
-    }));
-  }, [partnerA.sek, partnerA.allowances, partnerA.specialExpenses, partnerA.extraordinaryExpenses, partnerA.childAllowance,
-      partnerB.sek, partnerB.allowances, partnerB.specialExpenses, partnerB.extraordinaryExpenses, partnerB.childAllowance,
-      jointData.gsek]);
+      // Berechne gemeinsame Steuern
+      const jointTaxes = TaxCalc.calculateJointTax(jointData);
+      setJointData(prev => ({
+        ...prev,
+        gfe: jointTaxes.gfe,
+        gfs: jointTaxes.gfs
+      }));
+    }
+  }, [calculationMode, partnerA.sek, partnerB.sek, jointData.gsek]);
 
   const handleCalculate = async () => {
     if (!user) {
@@ -196,10 +194,6 @@ export const TaxCalculator: React.FC<TaxCalculatorProps> = ({ user }) => {
       steuerId: '',
       sek: 0,
       taxClass: 1,
-      allowances: 0,
-      specialExpenses: 0,
-      extraordinaryExpenses: 0,
-      childAllowance: 0,
       fee: 0,
       fse: 0,
       gl: 0,
@@ -212,10 +206,6 @@ export const TaxCalculator: React.FC<TaxCalculatorProps> = ({ user }) => {
       steuerId: '',
       sek: 0,
       taxClass: 1,
-      allowances: 0,
-      specialExpenses: 0,
-      extraordinaryExpenses: 0,
-      childAllowance: 0,
       fee: 0,
       fse: 0,
       gl: 0,
@@ -225,8 +215,10 @@ export const TaxCalculator: React.FC<TaxCalculatorProps> = ({ user }) => {
     setJointData({
       gsek: 0,
       gfe: 0,
-      gfs: 0
+      gfs: 0,
+      calculationMode: 'manual'
     });
+    setCalculationMode('manual');
     setYear(2024);
     setResult(null);
     setError(null);
@@ -294,26 +286,90 @@ export const TaxCalculator: React.FC<TaxCalculatorProps> = ({ user }) => {
               ))}
             </select>
           </div>
+
+          {/* Berechnungsmodus Toggle */}
+          <div className="mb-6">
+            <CalculationModeToggle
+              mode={calculationMode}
+              onModeChange={setCalculationMode}
+            />
+          </div>
+
+          {/* Infobox für automatische Berechnung */}
+          {calculationMode === 'calculated' && (
+            <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <div className="flex items-start">
+                <div className="flex-shrink-0">
+                  <svg className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <h3 className="text-sm font-medium text-yellow-800">
+                    Hinweis zur automatischen Berechnung
+                  </h3>
+                  <div className="mt-2 text-sm text-yellow-700">
+                    <p>
+                      Bei der automatischen Berechnung wird nur eine sehr grobe Steuerformel verwendet, 
+                      die nicht der offiziellen Ermittlungsmethode entspricht. Es handelt sich nur um Näherungswerte.
+                    </p>
+                    <p className="mt-2 font-medium">
+                      Empfehlung: Werte manuell aus der Steuererklärung übernehmen.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         
-        {/* Partner-Formulare in 2-spaltigem Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Partner-Formulare - Grüne Blöcke (Festgesetzte Werte) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <TaxPartnerForm
             partner={partnerA}
             onPartnerChange={setPartnerA}
             title="Partner A"
+            calculationMode={calculationMode}
           />
           <TaxPartnerForm
+            partner={partnerB}
+            onPartnerChange={setPartnerB}
+            title="Partner B"
+            calculationMode={calculationMode}
+          />
+        </div>
+
+        {/* Gemeinsame Daten */}
+        <div className="mb-6">
+          <JointDataForm
+            jointData={jointData}
+            onJointDataChange={setJointData}
+            calculationMode={calculationMode}
+          />
+        </div>
+
+        {/* Bereits gezahlte Beträge - Blaue Blöcke */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <PaidAmountsForm
+            partner={partnerA}
+            onPartnerChange={setPartnerA}
+            title="Partner A"
+          />
+          <PaidAmountsForm
             partner={partnerB}
             onPartnerChange={setPartnerB}
             title="Partner B"
           />
         </div>
 
-        {/* Gemeinsame Daten */}
-        <div className="mt-6">
-          <JointDataForm
-            jointData={jointData}
-            onJointDataChange={setJointData}
+        {/* Berechnete Werte - Lila Blöcke */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <CalculatedValuesForm
+            partner={partnerA}
+            title="Partner A"
+          />
+          <CalculatedValuesForm
+            partner={partnerB}
+            title="Partner B"
           />
         </div>
 

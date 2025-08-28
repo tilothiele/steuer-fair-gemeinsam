@@ -6,7 +6,7 @@ export class TaxCalculator {
    */
   static calculateIndividualTax(partner: TaxPartner): { fee: number; fse: number } {
     // Vereinfachte Steuerberechnung (in der Praxis würde hier die offizielle Formel stehen)
-    const taxableIncome = partner.sek - partner.allowances - partner.specialExpenses - partner.extraordinaryExpenses - partner.childAllowance;
+    const taxableIncome = partner.sek;
     
     if (taxableIncome <= 0) {
       return { fee: 0, fse: 0 };
@@ -27,6 +27,8 @@ export class TaxCalculator {
     
     return { fee, fse };
   }
+
+
 
   /**
    * Berechnet die gemeinsame Einkommensteuer
@@ -53,6 +55,8 @@ export class TaxCalculator {
     
     return { gfe, gfs };
   }
+
+
   /**
    * Berechnet die faire Aufteilung basierend auf festgesetzten Werten aus dem Steuerbescheid
    */
@@ -117,6 +121,8 @@ export class TaxCalculator {
     };
   }
 
+
+
   /**
    * Validiert die Eingabedaten
    */
@@ -126,10 +132,6 @@ export class TaxCalculator {
     // Partner A Validierung
     if (partnerA.sek < 0) errors.push('Partner A: Steuerpflichtiges Einkommen muss positiv sein');
     if (partnerA.taxClass < 1 || partnerA.taxClass > 6) errors.push('Partner A: Steuerklasse muss zwischen 1 und 6 liegen');
-    if (partnerA.allowances < 0) errors.push('Partner A: Werbungskosten müssen positiv sein');
-    if (partnerA.specialExpenses < 0) errors.push('Partner A: Sonderausgaben müssen positiv sein');
-    if (partnerA.extraordinaryExpenses < 0) errors.push('Partner A: Außergewöhnliche Belastungen müssen positiv sein');
-    if (partnerA.childAllowance < 0) errors.push('Partner A: Kinderfreibetrag muss positiv sein');
     if (partnerA.gl < 0) errors.push('Partner A: Bereits gezahlte Lohnsteuer muss positiv sein');
     if (partnerA.gve < 0) errors.push('Partner A: Bereits gezahlte Vorauszahlung muss positiv sein');
     if (partnerA.gs < 0) errors.push('Partner A: Bereits gezahlter Soli muss positiv sein');
@@ -137,10 +139,6 @@ export class TaxCalculator {
     // Partner B Validierung
     if (partnerB.sek < 0) errors.push('Partner B: Steuerpflichtiges Einkommen muss positiv sein');
     if (partnerB.taxClass < 1 || partnerB.taxClass > 6) errors.push('Partner B: Steuerklasse muss zwischen 1 und 6 liegen');
-    if (partnerB.allowances < 0) errors.push('Partner B: Werbungskosten müssen positiv sein');
-    if (partnerB.specialExpenses < 0) errors.push('Partner B: Sonderausgaben müssen positiv sein');
-    if (partnerB.extraordinaryExpenses < 0) errors.push('Partner B: Außergewöhnliche Belastungen müssen positiv sein');
-    if (partnerB.childAllowance < 0) errors.push('Partner B: Kinderfreibetrag muss positiv sein');
     if (partnerB.gl < 0) errors.push('Partner B: Bereits gezahlte Lohnsteuer muss positiv sein');
     if (partnerB.gve < 0) errors.push('Partner B: Bereits gezahlte Vorauszahlung muss positiv sein');
     if (partnerB.gs < 0) errors.push('Partner B: Bereits gezahlter Soli muss positiv sein');
