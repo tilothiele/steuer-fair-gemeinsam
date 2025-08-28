@@ -17,18 +17,23 @@ RUN npm run build
 WORKDIR /app
 
 # Install dependencies for main app
-COPY package.json package-lock.json* ./
-RUN npm ci
+COPY apps/web/package.json ./
+RUN npm install
 
 # Rebuild the source code only when needed
 FROM base AS builder
-WORKDIR /app
+WORKDIR /app/web
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/packages ./packages
-COPY package.json package-lock.json* ./
+COPY apps/web/package.json ./
+COPY apps/web/ ./
+RUN ls -la packages/ && rm -rf node_modules/@steuer-fair && mkdir -p node_modules/@steuer-fair && cp -r packages/shared node_modules/@steuer-fair/shared
 
 # Build the application
 RUN npm run build
+
+#RUN pwd && ls -la
+#RUN find / -name "standalone"
 
 # Production image, copy all the files and run the app
 FROM base AS runner
@@ -39,8 +44,8 @@ ENV NODE_ENV=production
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/web/.next/standalone ./
+COPY --from=builder /app/web/.next/static ./.next/static
 
 USER nextjs
 
