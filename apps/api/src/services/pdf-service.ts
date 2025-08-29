@@ -33,64 +33,72 @@ export class PdfService {
         process.env.DEBUG = 'puppeteer:*';
         logger.info('Puppeteer Debug-Logging aktiviert');
 
+        // Chrome-Argumente aus Umgebungsvariable oder Standard verwenden
+        const chromeArgs = process.env.CHROME_ARGS
+          ? process.env.CHROME_ARGS.split(',').map(arg => arg.trim())
+          : [
+              '--no-sandbox',
+              '--disable-setuid-sandbox',
+              '--disable-dev-shm-usage',
+              '--disable-gpu',
+              '--no-first-run',
+              '--no-zygote',
+              '--disable-extensions',
+              '--disable-background-timer-throttling',
+              '--disable-backgrounding-occluded-windows',
+              '--disable-renderer-backgrounding',
+              '--disable-web-security',
+              '--disable-features=VizDisplayCompositor',
+              '--disable-ipc-flooding-protection',
+              '--disable-default-apps',
+              '--disable-sync',
+              '--disable-translate',
+              '--hide-scrollbars',
+              '--mute-audio',
+              '--no-default-browser-check',
+              '--disable-component-extensions-with-background-pages',
+              '--disable-background-networking',
+              '--disable-client-side-phishing-detection',
+              '--disable-hang-monitor',
+              '--disable-prompt-on-repost',
+              '--disable-domain-reliability',
+              '--disable-features=TranslateUI',
+              '--single-process',
+              // Chrome Debug-Logging aktivieren
+              '--enable-logging',
+              '--v=1',
+              '--vmodule=*/chrome/*=1',
+              '--log-level=0',
+              '--enable-logging=stderr',
+              '--log-file=/tmp/chrome-debug.log',
+              '--disable-logging-redirect',
+              '--enable-logging-redirect',
+              '--log-to-stderr',
+              '--enable-logging-redirect=1',
+              '--enable-logging-redirect=2',
+              '--enable-logging-redirect=3',
+              '--enable-logging-redirect=4',
+              '--enable-logging-redirect=5',
+              '--enable-logging-redirect=6',
+              '--enable-logging-redirect=7',
+              '--enable-logging-redirect=8',
+              '--enable-logging-redirect=9',
+              '--enable-logging-redirect=10'
+            ];
+
+        // Debug: Chrome-Argumente loggen
+        logger.info('Chrome-Argumente:', {
+          CHROME_ARGS: process.env.CHROME_ARGS,
+          argsCount: chromeArgs.length,
+          args: chromeArgs
+        });
+
         browser = await puppeteer.launch({
           headless: true,
-          args: [
-            '--no-sandbox',
-            '--disable-setuid-sandbox',
-            '--disable-dev-shm-usage',
-            '--disable-gpu',
-            '--no-first-run',
-            '--no-zygote',
-            //'--single-process',
-            '--disable-extensions',
-            '--disable-background-timer-throttling',
-            '--disable-backgrounding-occluded-windows',
-            '--disable-renderer-backgrounding',
-            '--disable-web-security',
-            '--disable-features=VizDisplayCompositor',
-            '--disable-ipc-flooding-protection',
-            '--disable-default-apps',
-            '--disable-sync',
-            '--disable-translate',
-            '--hide-scrollbars',
-            '--mute-audio',
-            '--no-default-browser-check',
-            '--disable-component-extensions-with-background-pages',
-            '--disable-background-networking',
-            '--disable-background-timer-throttling',
-            '--disable-client-side-phishing-detection',
-            '--disable-hang-monitor',
-            '--disable-prompt-on-repost',
-            '--disable-domain-reliability',
-            '--disable-features=TranslateUI',
-            '--disable-ipc-flooding-protection',
-            '--no-zygote',
-            '--single-process',
-            // Chrome Debug-Logging aktivieren
-            '--enable-logging',
-            '--v=1',
-            '--vmodule=*/chrome/*=1',
-            '--log-level=0',
-            '--enable-logging=stderr',
-            '--log-file=/tmp/chrome-debug.log',
-            '--disable-logging-redirect',
-            '--enable-logging-redirect',
-            '--log-to-stderr',
-            '--enable-logging-redirect=1',
-            '--enable-logging-redirect=2',
-            '--enable-logging-redirect=3',
-            '--enable-logging-redirect=4',
-            '--enable-logging-redirect=5',
-            '--enable-logging-redirect=6',
-            '--enable-logging-redirect=7',
-            '--enable-logging-redirect=8',
-            '--enable-logging-redirect=9',
-            '--enable-logging-redirect=10'
-          ],
+          args: chromeArgs,
           executablePath: process.env.CHROME_BIN || undefined,
-          timeout: 30000,
-          protocolTimeout: 30000
+          timeout: parseInt(process.env.CHROME_TIMEOUT || '30000'),
+          protocolTimeout: parseInt(process.env.CHROME_PROTOCOL_TIMEOUT || '30000')
         });
 
         const page = await browser.newPage();
