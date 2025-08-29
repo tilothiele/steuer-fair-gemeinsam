@@ -122,8 +122,8 @@ app.use(express.urlencoded({ extended: true }));
 // Session configuration
 app.use(cookieSession(sessionConfig));
 
-// Keycloak middleware
-app.use(keycloak.middleware());
+// Keycloak middleware - ENTFERNT, da wir unsere eigene authenticateToken verwenden
+// app.use(keycloak.middleware());
 
 // Request logging
 app.use(requestLogger);
