@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { logger } from '../utils/logger';
 import { authenticateToken, AuthenticatedRequest } from '../middleware/auth';
-import { ProfileStore } from '../utils/profile-store';
+import { UserRepository } from '../repositories/user-repository';
 
 const router = Router();
 
@@ -47,7 +47,26 @@ router.put('/:loginId', async (req, res) => {
     */
 
     // Profil speichern oder aktualisieren
-    const currentUser = await ProfileStore.saveOrUpdate(loginId, name, steuernummer);
+    let currentUser;
+    
+    // Prüfe ob Benutzer bereits existiert
+    const existingUser = await UserRepository.findByLoginId(loginId);
+    
+    if (existingUser) {
+      // Aktualisiere bestehenden Benutzer
+      currentUser = await UserRepository.update({
+        ...existingUser,
+        name: name || existingUser.name,
+        steuernummer: steuernummer || existingUser.steuernummer
+      });
+    } else {
+      // Erstelle neuen Benutzer
+      currentUser = await UserRepository.create({
+        loginId,
+        name: name || '',
+        steuernummer: steuernummer || ''
+      });
+    }
 
     logger.info('Profil erfolgreich aktualisiert', { loginId, name, steuernummer });
 
@@ -57,6 +76,35 @@ router.put('/:loginId', async (req, res) => {
     });
   } catch (error) {
     logger.error('Fehler beim Aktualisieren des Profils:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Interner Server-Fehler',
+      details: error instanceof Error ? error.message : 'Unbekannter Fehler'
+    });
+  }
+});
+
+// Profil laden
+router.get('/:loginId', async (req, res) => {
+  try {
+    const { loginId } = req.params;
+
+    // Profil aus Datenbank laden
+    const user = await UserRepository.findByLoginId(loginId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: 'Profil nicht gefunden'
+      });
+    }
+
+    res.json({
+      success: true,
+      user
+    });
+  } catch (error) {
+    logger.error('Fehler beim Laden des Profils:', error);
     res.status(500).json({
       success: false,
       error: 'Interner Server-Fehler',
