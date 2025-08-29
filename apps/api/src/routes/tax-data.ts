@@ -2,14 +2,23 @@ import { Router } from 'express';
 import { TaxRepository } from '../repositories/tax-repository';
 import { TaxCalculationRequestSchema } from '@steuer-fair/shared';
 import { logger } from '../utils/logger';
+import { authenticateToken, AuthenticatedRequest } from '../middleware/auth';
 
 const router = Router();
 
 // Steuerdaten für Benutzer und Jahr laden
-router.get('/:loginId/:year', async (req, res) => {
+router.get('/:loginId/:year', authenticateToken, async (req: AuthenticatedRequest, res) => {
   try {
     const { loginId, year } = req.params;
     const taxYear = parseInt(year);
+
+    // Benutzer-Validierung: Nur eigene Daten abrufen
+    if (req.user && req.user.name !== loginId && req.user.id !== loginId) {
+      return res.status(403).json({
+        success: false,
+        error: 'Sie können nur Ihre eigenen Daten abrufen'
+      });
+    }
 
     if (isNaN(taxYear)) {
       return res.status(400).json({
@@ -47,10 +56,10 @@ router.get('/:loginId/:year', async (req, res) => {
 });
 
 // Steuerdaten speichern
-router.post('/save', async (req, res) => {
+router.post('/save', authenticateToken, async (req: AuthenticatedRequest, res) => {
   try {
     const validationResult = TaxCalculationRequestSchema.safeParse(req.body);
-    
+
     if (!validationResult.success) {
       return res.status(400).json({
         success: false,
@@ -60,11 +69,20 @@ router.post('/save', async (req, res) => {
     }
 
     const taxData = validationResult.data;
+
+    // Benutzer-Validierung: Nur eigene Daten speichern
+    if (req.user && req.user.name !== taxData.userId && req.user.id !== taxData.userId) {
+      return res.status(403).json({
+        success: false,
+        error: 'Sie können nur Ihre eigenen Daten speichern'
+      });
+    }
+
     const savedData = await TaxRepository.save(taxData);
 
-    logger.info('Steuerdaten erfolgreich gespeichert', { 
-      userId: taxData.userId, 
-      year: taxData.year 
+    logger.info('Steuerdaten erfolgreich gespeichert', {
+      userId: taxData.userId,
+      year: taxData.year
     });
 
     res.json({

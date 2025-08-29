@@ -104,7 +104,7 @@ export const TaxCalculationResult: React.FC<TaxCalculationResultProps> = ({
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span className="text-gray-600">Hätte zahlen müssen:</span>
-                <span className="font-medium">{formatCurrency(result.partnerA.hätteZahlenMüssen)}</span>
+                <span className="font-medium">{formatCurrency(result.partnerA.haetteZahlenMuessen)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Muss nun zahlen:</span>
@@ -131,7 +131,7 @@ export const TaxCalculationResult: React.FC<TaxCalculationResultProps> = ({
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span className="text-gray-600">Hätte zahlen müssen:</span>
-                <span className="font-medium">{formatCurrency(result.partnerB.hätteZahlenMüssen)}</span>
+                <span className="font-medium">{formatCurrency(result.partnerB.haetteZahlenMuessen)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Muss nun zahlen:</span>

@@ -13,7 +13,7 @@ export const CalculatedValuesForm: React.FC<CalculatedValuesFormProps> = ({
   title
 }) => {
   // Berechnete Werte
-  const hätteZahlenMüssen = partner.fee + partner.fse; // FEE + FSE
+  const haetteZahlenMuessen = partner.fee + partner.fse; // FEE + FSE
   const hatGezahlt = partner.gl + partner.gve + partner.gs; // GL + GVE + GS
 
   return (
@@ -28,7 +28,7 @@ export const CalculatedValuesForm: React.FC<CalculatedValuesFormProps> = ({
           <label className="form-label text-purple-800">Hätte zahlen müssen (€)</label>
           <input
             type="number"
-            value={hätteZahlenMüssen.toFixed(2)}
+            value={haetteZahlenMuessen.toFixed(2)}
             readOnly
             className="input-field bg-white text-purple-800 font-medium"
           />
@@ -56,12 +56,12 @@ export const CalculatedValuesForm: React.FC<CalculatedValuesFormProps> = ({
           <label className="form-label text-purple-800">Differenz (€)</label>
           <input
             type="number"
-            value={(hätteZahlenMüssen - hatGezahlt).toFixed(2)}
+            value={(haetteZahlenMuessen - hatGezahlt).toFixed(2)}
             readOnly
             className={`input-field bg-white font-medium ${
-              hätteZahlenMüssen - hatGezahlt > 0 
+              haetteZahlenMuessen - hatGezahlt > 0 
                 ? 'text-red-800' 
-                : hätteZahlenMüssen - hatGezahlt < 0 
+                : haetteZahlenMuessen - hatGezahlt < 0 
                 ? 'text-green-800' 
                 : 'text-purple-800'
             }`}

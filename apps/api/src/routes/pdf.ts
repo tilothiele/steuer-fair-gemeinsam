@@ -13,9 +13,12 @@ const router = Router();
  */
 router.post('/download', authenticateToken, async (req: AuthenticatedRequest, res) => {
   try {
+    // Verwende Benutzerdaten aus Token
+    const user = req.user;
+
     // Validiere Request Body
     const validationResult = TaxCalculationRequestSchema.safeParse(req.body);
-    
+
     if (!validationResult.success) {
       return res.status(400).json({
         success: false,
@@ -24,10 +27,15 @@ router.post('/download', authenticateToken, async (req: AuthenticatedRequest, re
       });
     }
 
-    const { partnerA, partnerB, jointData, year } = validationResult.data;
+    const { partnerA, partnerB, jointData, year, userId } = validationResult.data;
 
-    // Verwende Benutzerdaten aus Token
-    const user = req.user;
+    // Benutzer-Validierung: Nur eigene Daten für PDF verwenden
+    if (req.user && req.user.name !== userId && req.user.id !== userId) {
+      return res.status(403).json({
+        success: false,
+        error: 'Sie können nur Ihre eigenen Daten für PDF verwenden'
+      });
+    }
 
     // Führe die echte Steuerberechnung durch
     const result = TaxCalculator.calculateFairSplit(partnerA, partnerB, jointData);

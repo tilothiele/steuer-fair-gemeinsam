@@ -7,7 +7,7 @@ export class TaxCalculator {
   static calculateIndividualTax(partner: TaxPartner): { fee: number; fse: number } {
     // Vereinfachte Steuerberechnung (in der Praxis würde hier die offizielle Formel stehen)
     const taxableIncome = partner.sek;
-    
+
     if (taxableIncome <= 0) {
       return { fee: 0, fse: 0 };
     }
@@ -15,16 +15,16 @@ export class TaxCalculator {
     // Grundfreibetrag 2024: 11.604€
     const basicAllowance = 11604;
     const taxableAmount = Math.max(0, taxableIncome - basicAllowance);
-    
+
     // Vereinfachte Steuerberechnung (linearer Ansatz für Demo)
     // In der Praxis würde hier die offizielle Steuertabelle verwendet
     let taxRate = 0.14; // 14% Grundsatz
     if (taxableAmount > 10908) taxRate = 0.24; // 24% für höhere Einkommen
     if (taxableAmount > 62809) taxRate = 0.42; // 42% für sehr hohe Einkommen
-    
+
     const fee = Math.round(taxableAmount * taxRate);
     const fse = Math.round(fee * 0.055); // 5,5% Soli
-    
+
     return { fee, fse };
   }
 
@@ -36,7 +36,7 @@ export class TaxCalculator {
   static calculateJointTax(jointData: JointTaxData): { gfe: number; gfs: number } {
     // Vereinfachte gemeinsame Steuerberechnung
     const taxableIncome = jointData.gsek;
-    
+
     if (taxableIncome <= 0) {
       return { gfe: 0, gfs: 0 };
     }
@@ -44,15 +44,15 @@ export class TaxCalculator {
     // Grundfreibetrag für Ehepaare 2024: 23.208€
     const basicAllowance = 23208;
     const taxableAmount = Math.max(0, taxableIncome - basicAllowance);
-    
+
     // Vereinfachte Steuerberechnung für Ehepaare
     let taxRate = 0.14; // 14% Grundsatz
     if (taxableAmount > 21816) taxRate = 0.24; // 24% für höhere Einkommen
     if (taxableAmount > 125618) taxRate = 0.42; // 42% für sehr hohe Einkommen
-    
+
     const gfe = Math.round(taxableAmount * taxRate);
     const gfs = Math.round(gfe * 0.055); // 5,5% Soli
-    
+
     return { gfe, gfs };
   }
 
@@ -61,15 +61,15 @@ export class TaxCalculator {
    * Berechnet die faire Aufteilung basierend auf festgesetzten Werten aus dem Steuerbescheid
    */
   static calculateFairSplit(
-    partnerA: TaxPartner, 
-    partnerB: TaxPartner, 
+    partnerA: TaxPartner,
+    partnerB: TaxPartner,
     jointData: JointTaxData
   ): TaxCalculationResult {
-    
+
     // Plausibilitätsprüfung: FEEa+FEEb+FSEa+FSEb > GFE+GFS
     const totalIndividualTaxes = (partnerA.fee + partnerA.fse) + (partnerB.fee + partnerB.fse);
     const totalJointTaxes = jointData.gfe + jointData.gfs;
-    
+
     if (totalIndividualTaxes <= totalJointTaxes) {
       return {
         plausibilityCheck: false,
@@ -77,8 +77,8 @@ export class TaxCalculator {
         factorA: 0,
         factorB: 0,
         gzz: 0,
-        partnerA: { hätteZahlenMüssen: 0, mussNunZahlen: 0, hatGezahlt: 0, differenz: 0 },
-        partnerB: { hätteZahlenMüssen: 0, mussNunZahlen: 0, hatGezahlt: 0, differenz: 0 }
+        partnerA: { haetteZahlenMuessen: 0, mussNunZahlen: 0, hatGezahlt: 0, differenz: 0 },
+        partnerB: { haetteZahlenMuessen: 0, mussNunZahlen: 0, hatGezahlt: 0, differenz: 0 }
       };
     }
 
@@ -90,13 +90,13 @@ export class TaxCalculator {
     const gzz = jointData.gfe + jointData.gfs;
 
     // Berechne Ergebnisse für Partner A
-    const partnerAHätteZahlenMüssen = partnerA.fee + partnerA.fse;
+    const partnerAHaetteZahlenMuessen = partnerA.fee + partnerA.fse;
     const partnerAMussNunZahlen = factorA * gzz;
     const partnerAHatGezahlt = partnerA.gl + partnerA.gve + partnerA.gs;
     const partnerADifferenz = partnerAMussNunZahlen - partnerAHatGezahlt;
 
     // Berechne Ergebnisse für Partner B
-    const partnerBHätteZahlenMüssen = partnerB.fee + partnerB.fse;
+    const partnerBHaetteZahlenMuessen = partnerB.fee + partnerB.fse;
     const partnerBMussNunZahlen = factorB * gzz;
     const partnerBHatGezahlt = partnerB.gl + partnerB.gve + partnerB.gs;
     const partnerBDifferenz = partnerBMussNunZahlen - partnerBHatGezahlt;
@@ -107,13 +107,13 @@ export class TaxCalculator {
       factorB: Math.round(factorB * 10000) / 10000, // 4 Dezimalstellen
       gzz: Math.round(gzz * 100) / 100,
       partnerA: {
-        hätteZahlenMüssen: Math.round(partnerAHätteZahlenMüssen * 100) / 100,
+        haetteZahlenMuessen: Math.round(partnerAHaetteZahlenMuessen * 100) / 100,
         mussNunZahlen: Math.round(partnerAMussNunZahlen * 100) / 100,
         hatGezahlt: Math.round(partnerAHatGezahlt * 100) / 100,
         differenz: Math.round(partnerADifferenz * 100) / 100
       },
       partnerB: {
-        hätteZahlenMüssen: Math.round(partnerBHätteZahlenMüssen * 100) / 100,
+        haetteZahlenMuessen: Math.round(partnerBHaetteZahlenMuessen * 100) / 100,
         mussNunZahlen: Math.round(partnerBMussNunZahlen * 100) / 100,
         hatGezahlt: Math.round(partnerBHatGezahlt * 100) / 100,
         differenz: Math.round(partnerBDifferenz * 100) / 100

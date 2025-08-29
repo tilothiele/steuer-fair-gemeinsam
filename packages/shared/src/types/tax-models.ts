@@ -69,13 +69,13 @@ export const TaxCalculationResultSchema = z.object({
   gzz: z.coerce.number(), // GFE + GFS
   // Ergebnisse für jeden Partner
   partnerA: z.object({
-    hätteZahlenMüssen: z.coerce.number(), // FEE + FSE
+    haetteZahlenMuessen: z.coerce.number(), // FEE + FSE
     mussNunZahlen: z.coerce.number(),     // FaktorA * GZZ
     hatGezahlt: z.coerce.number(),        // GL + GVE + GS
     differenz: z.coerce.number()          // MNZ - HG
   }),
   partnerB: z.object({
-    hätteZahlenMüssen: z.coerce.number(), // FEE + FSE
+    haetteZahlenMuessen: z.coerce.number(), // FEE + FSE
     mussNunZahlen: z.coerce.number(),     // FaktorB * GZZ
     hatGezahlt: z.coerce.number(),        // GL + GVE + GS
     differenz: z.coerce.number()          // MNZ - HG
@@ -92,13 +92,13 @@ export interface TaxCalculationResult {
   gzz: number; // GFE + GFS
   // Ergebnisse für jeden Partner
   partnerA: {
-    hätteZahlenMüssen: number; // FEE + FSE
+    haetteZahlenMuessen: number; // FEE + FSE
     mussNunZahlen: number;     // FaktorA * GZZ
     hatGezahlt: number;        // GL + GVE + GS
     differenz: number;         // MNZ - HG
   };
   partnerB: {
-    hätteZahlenMüssen: number; // FEE + FSE
+    haetteZahlenMuessen: number; // FEE + FSE
     mussNunZahlen: number;     // FaktorB * GZZ
     hatGezahlt: number;        // GL + GVE + GS
     differenz: number;         // MNZ - HG

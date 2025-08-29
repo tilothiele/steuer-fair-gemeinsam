@@ -21,8 +21,8 @@ router.get('/debug/token', authenticateToken, async (req: AuthenticatedRequest, 
   }
 });
 
-// Profil speichern (temporär ohne strenge Authentifizierung für Debugging)
-router.put('/:loginId', async (req, res) => {
+// Profil speichern
+router.put('/:loginId', authenticateToken, async (req: AuthenticatedRequest, res) => {
   try {
     const { loginId } = req.params;
     const { name, steuernummer } = req.body;
@@ -35,16 +35,13 @@ router.put('/:loginId', async (req, res) => {
       });
     }
 
-    // Temporär deaktiviert für Debugging
-    // TODO: Reaktivieren nach Token-Validierung-Fix
-    /*
-    if (req.user && req.user.id !== loginId && req.user.name !== loginId) {
+    // Benutzer-Validierung: Nur eigenes Profil bearbeiten
+    if (req.user && req.user.name !== loginId && req.user.id !== loginId) {
       return res.status(403).json({
         success: false,
         error: 'Sie können nur Ihr eigenes Profil bearbeiten'
       });
     }
-    */
 
     // Profil speichern oder aktualisieren
     let currentUser;
@@ -85,9 +82,17 @@ router.put('/:loginId', async (req, res) => {
 });
 
 // Profil laden
-router.get('/:loginId', async (req, res) => {
+router.get('/:loginId', authenticateToken, async (req: AuthenticatedRequest, res) => {
   try {
     const { loginId } = req.params;
+
+    // Benutzer-Validierung: Nur eigenes Profil laden
+    if (req.user && req.user.name !== loginId && req.user.id !== loginId) {
+      return res.status(403).json({
+        success: false,
+        error: 'Sie können nur Ihr eigenes Profil laden'
+      });
+    }
 
     // Profil aus Datenbank laden
     const user = await UserRepository.findByLoginId(loginId);

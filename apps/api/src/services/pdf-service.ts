@@ -347,7 +347,7 @@ export class PdfService {
               <h4>Partner A - Aufteilung</h4>
               <div class="data-row">
                 <span class="label">Hätte zahlen müssen:</span>
-                <span class="value">${formatCurrency(result.partnerA.hätteZahlenMüssen)}</span>
+                <span class="value">${formatCurrency(result.partnerA.haetteZahlenMuessen)}</span>
               </div>
               <div class="data-row">
                 <span class="label">Muss nun zahlen:</span>
@@ -367,7 +367,7 @@ export class PdfService {
               <h4>Partner B - Aufteilung</h4>
               <div class="data-row">
                 <span class="label">Hätte zahlen müssen:</span>
-                <span class="value">${formatCurrency(result.partnerB.hätteZahlenMüssen)}</span>
+                <span class="value">${formatCurrency(result.partnerB.haetteZahlenMuessen)}</span>
               </div>
               <div class="data-row">
                 <span class="label">Muss nun zahlen:</span>
