@@ -145,6 +145,25 @@ app.use('*', (req, res) => {
 // Error handling
 app.use(errorHandler);
 
+// Global error handlers für uncaught exceptions
+process.on('uncaughtException', (error) => {
+  logger.error('🚨 UNCAUGHT EXCEPTION:', {
+    message: error.message,
+    stack: error.stack,
+    timestamp: new Date().toISOString()
+  });
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  logger.error('🚨 UNHANDLED REJECTION:', {
+    reason: reason,
+    promise: promise,
+    timestamp: new Date().toISOString()
+  });
+  process.exit(1);
+});
+
 // Start server
 app.listen(PORT, () => {
   logger.info(`🚀 Steuer-Fair API Server läuft auf Port ${PORT}`);

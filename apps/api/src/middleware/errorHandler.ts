@@ -16,15 +16,43 @@ export const errorHandler = (
   let error = { ...err };
   error.message = err.message;
 
-  // Log error
-  logger.error({
+  // Bestimme Status Code
+  const statusCode = error.statusCode || 500;
+  const isServerError = statusCode >= 500;
+
+  // Detailliertes Error Logging
+  const errorLog = {
     message: err.message,
     stack: err.stack,
     url: req.url,
     method: req.method,
     ip: req.ip,
-    userAgent: req.get('User-Agent')
-  });
+    userAgent: req.get('User-Agent'),
+    statusCode: statusCode,
+    isServerError: isServerError,
+    timestamp: new Date().toISOString(),
+    requestId: req.headers['x-request-id'] || 'unknown'
+  };
+
+  // Server-Fehler (500+) immer als ERROR loggen
+  if (isServerError) {
+    logger.error('🚨 SERVER ERROR:', errorLog);
+
+    // Zusätzliche Details für Server-Fehler
+    logger.error('Request Details:', {
+      body: req.body,
+      query: req.query,
+      params: req.params,
+      headers: {
+        authorization: req.headers.authorization ? 'present' : 'missing',
+        'content-type': req.headers['content-type'],
+        origin: req.headers.origin
+      }
+    });
+  } else {
+    // Client-Fehler (400-499) als WARN loggen
+    logger.warn('⚠️ CLIENT ERROR:', errorLog);
+  }
 
   // Zod validation error
   if (err instanceof ZodError) {
@@ -33,7 +61,7 @@ export const errorHandler = (
       field: e.path.join('.'),
       message: e.message
     }));
-    
+
     return res.status(400).json({
       success: false,
       error: message,
