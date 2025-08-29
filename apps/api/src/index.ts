@@ -28,19 +28,22 @@ const corsOptions = {
   origin: function (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) {
     // Erlaube requests ohne origin (z.B. Postman, curl)
     if (!origin) {
+      console.log('No origin');
       return callback(null, true);
     }
 
     // Lokale Entwicklung
     if (origin === 'http://localhost:3000' || origin === 'http://127.0.0.1:3000') {
+      console.log('Localhost');
       return callback(null, true);
     }
 
     // Dynamische Frontend-URLs basierend auf API-URL
     const apiUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
-    
+
     // Wenn FRONTEND_URL gesetzt ist, erlaube diese
     if (apiUrl && origin.startsWith(apiUrl.replace(':3001', ':3000'))) {
+      console.log('FRONTEND_URL');
       return callback(null, true);
     }
 
@@ -48,11 +51,14 @@ const corsOptions = {
     try {
       const url = new URL(origin);
       const apiUrlObj = new URL(apiUrl);
-      
+
+      console.log('url', url);
+      console.log('apiUrlObj', apiUrlObj);
       // Wenn gleiche Domain, erlaube
-      if (url.hostname === apiUrlObj.hostname || 
+      if (url.hostname === apiUrlObj.hostname ||
           url.hostname.endsWith('.' + apiUrlObj.hostname) ||
           apiUrlObj.hostname.endsWith('.' + url.hostname)) {
+          console.log('Same domain');
         return callback(null, true);
       }
     } catch (e) {
@@ -61,9 +67,11 @@ const corsOptions = {
 
     // Fallback: Erlaube alle Origins in Entwicklung
     if (process.env.NODE_ENV === 'development') {
+      console.log('Development');
       return callback(null, true);
     }
 
+    console.log('CORS nicht erlaubt');
     callback(new Error('CORS nicht erlaubt'));
   },
   credentials: true,
@@ -102,8 +110,8 @@ app.options('*', cors(corsOptions));
 
 // Health check
 app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
+  res.json({
+    status: 'OK',
     timestamp: new Date().toISOString(),
     version: process.env.npm_package_version || '1.0.0'
   });
@@ -117,9 +125,9 @@ app.use('/api/pdf', pdfRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {
-  res.status(404).json({ 
+  res.status(404).json({
     error: 'Endpoint nicht gefunden',
-    path: req.originalUrl 
+    path: req.originalUrl
   });
 });
 
