@@ -2,7 +2,59 @@ import axios from 'axios';
 import { TaxPartner, TaxCalculationResult, JointTaxData, User } from '@steuer-fair/shared';
 import { getToken } from '../config/keycloak';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+/**
+ * Ermittelt die API-Basis-URL dynamisch basierend auf der aktuellen URL
+ *
+ * Logik:
+ * 1. Wenn NEXT_PUBLIC_API_URL definiert ist -> verwende diese
+ * 2. Sonst: Konvertiere <servername>.<domain>.<tld> zu <servername>-api.<domain>.<tld>
+ * 3. Fallback: localhost:3001
+ */
+function getApiBaseUrl(): string {
+  // 1. Prüfe ob NEXT_PUBLIC_API_URL definiert ist
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL;
+  }
+
+  // 2. Prüfe ob wir im Browser sind
+  if (typeof window === 'undefined') {
+    return 'http://localhost:3001'; // Server-side Fallback
+  }
+
+  const currentUrl = window.location.hostname;
+
+  // 3. Prüfe ob es sich um localhost handelt
+  if (currentUrl === 'localhost' || currentUrl === '127.0.0.1') {
+    return 'http://localhost:3001';
+  }
+
+  // 4. Parse die URL nach dem Schema <servername>.<domain>.<tld>
+  const urlParts = currentUrl.split('.');
+
+  if (urlParts.length >= 2) {
+    // Erste Komponente ist der Servername
+    const serverName = urlParts[0];
+    // Rest ist die Domain
+    const domain = urlParts.slice(1).join('.');
+
+    // Erstelle API-URL: <servername>-api.<domain>
+    const apiUrl = `${serverName}-api.${domain}`;
+
+    // Verwende das gleiche Protokoll wie die aktuelle Seite
+    const protocol = window.location.protocol;
+    const port = window.location.port ? `:${window.location.port}` : '';
+
+    return `${protocol}//${apiUrl}${port}`;
+  }
+
+  // 5. Fallback
+  return 'http://localhost:3001';
+}
+
+// Dynamische API-Basis-URL ermitteln
+const API_BASE_URL = getApiBaseUrl();
+
+console.log('API Base URL:', API_BASE_URL);
 
 // Axios Instance konfigurieren
 const apiClient = axios.create({
@@ -17,7 +69,7 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(
   (config) => {
     console.log(`API Request: ${config.method?.toUpperCase()} ${config.url}`);
-    
+
     // Füge Authorization Header hinzu
     const token = getToken();
     console.log('Token verfügbar:', !!token);
@@ -27,7 +79,7 @@ apiClient.interceptors.request.use(
     } else {
       console.warn('Kein Token verfügbar für Request:', config.url);
     }
-    
+
     return config;
   },
   (error) => {
@@ -44,11 +96,11 @@ apiClient.interceptors.response.use(
   },
   (error) => {
     console.error('API Response Error:', error);
-    
+
     if (error.response) {
       // Server hat mit einem Fehler-Status geantwortet
       const { status, data } = error.response;
-      
+
       switch (status) {
         case 400:
           throw new Error(data.error || 'Ungültige Anfrage');
@@ -254,3 +306,6 @@ export class ProfileApiService {
 
 // Export der Axios-Instance für erweiterte Nutzung
 export { apiClient };
+
+// Export der getApiBaseUrl Funktion für andere Komponenten
+export { getApiBaseUrl };

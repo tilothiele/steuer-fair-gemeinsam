@@ -23,14 +23,14 @@ show_current_env() {
 # Funktion zum Lesen von Werten aus .env
 get_env_value() {
     local key=$1
-    local value=$(grep "^${key}=" .env | cut -d'=' -f2)
+    local value=$(grep "^${key}=" .env | cut -d'=' -f2-)
     echo "$value"
 }
 
 # Funktion zum Wechseln zur Development-Umgebung
 switch_to_dev() {
     echo "🔄 Wechsle zu Development-Umgebung..."
-    
+
     # Lade Werte aus .env
     DB_HOST_DEV=$(get_env_value "DB_HOST_DEV")
     DB_PORT_DEV=$(get_env_value "DB_PORT_DEV")
@@ -38,10 +38,10 @@ switch_to_dev() {
     DB_USER_DEV=$(get_env_value "DB_USER_DEV")
     DB_PASSWORD_DEV=$(get_env_value "DB_PASSWORD_DEV")
     DATABASE_URL_DEV=$(get_env_value "DATABASE_URL_DEV")
-    
+
     # Aktualisiere NODE_ENV
     sed -i 's/^NODE_ENV=.*/NODE_ENV=development/' .env
-    
+
     # Aktualisiere Datenbankverbindung mit tatsächlichen Werten
     sed -i "s|^DB_HOST=.*|DB_HOST=$DB_HOST_DEV|" .env
     sed -i "s|^DB_PORT=.*|DB_PORT=$DB_PORT_DEV|" .env
@@ -49,7 +49,7 @@ switch_to_dev() {
     sed -i "s|^DB_USER=.*|DB_USER=$DB_USER_DEV|" .env
     sed -i "s|^DB_PASSWORD=.*|DB_PASSWORD=$DB_PASSWORD_DEV|" .env
     sed -i "s|^DATABASE_URL=.*|DATABASE_URL=$DATABASE_URL_DEV|" .env
-    
+
     echo "✅ Development-Umgebung aktiviert!"
     show_current_env
 }
@@ -57,7 +57,7 @@ switch_to_dev() {
 # Funktion zum Wechseln zur Test-Umgebung
 switch_to_test() {
     echo "🔄 Wechsle zu Test-Umgebung..."
-    
+
     # Lade Werte aus .env
     DB_HOST_TEST=$(get_env_value "DB_HOST_TEST")
     DB_PORT_TEST=$(get_env_value "DB_PORT_TEST")
@@ -65,10 +65,10 @@ switch_to_test() {
     DB_USER_TEST=$(get_env_value "DB_USER_TEST")
     DB_PASSWORD_TEST=$(get_env_value "DB_PASSWORD_TEST")
     DATABASE_URL_TEST=$(get_env_value "DATABASE_URL_TEST")
-    
+
     # Aktualisiere NODE_ENV
     sed -i 's/^NODE_ENV=.*/NODE_ENV=test/' .env
-    
+
     # Aktualisiere Datenbankverbindung mit tatsächlichen Werten
     sed -i "s|^DB_HOST=.*|DB_HOST=$DB_HOST_TEST|" .env
     sed -i "s|^DB_PORT=.*|DB_PORT=$DB_PORT_TEST|" .env
@@ -76,7 +76,7 @@ switch_to_test() {
     sed -i "s|^DB_USER=.*|DB_USER=$DB_USER_TEST|" .env
     sed -i "s|^DB_PASSWORD=.*|DB_PASSWORD=$DB_PASSWORD_TEST|" .env
     sed -i "s|^DATABASE_URL=.*|DATABASE_URL=$DATABASE_URL_TEST|" .env
-    
+
     echo "✅ Test-Umgebung aktiviert!"
     show_current_env
 }
@@ -84,7 +84,7 @@ switch_to_test() {
 # Funktion zum Wechseln zur Production-Umgebung
 switch_to_prod() {
     echo "🔄 Wechsle zu Production-Umgebung..."
-    
+
     # Lade Werte aus .env
     DB_HOST_PROD=$(get_env_value "DB_HOST_PROD")
     DB_PORT_PROD=$(get_env_value "DB_PORT_PROD")
@@ -92,10 +92,10 @@ switch_to_prod() {
     DB_USER_PROD=$(get_env_value "DB_USER_PROD")
     DB_PASSWORD_PROD=$(get_env_value "DB_PASSWORD_PROD")
     DATABASE_URL_PROD=$(get_env_value "DATABASE_URL_PROD")
-    
+
     # Aktualisiere NODE_ENV
     sed -i 's/^NODE_ENV=.*/NODE_ENV=production/' .env
-    
+
     # Aktualisiere Datenbankverbindung mit tatsächlichen Werten
     sed -i "s|^DB_HOST=.*|DB_HOST=$DB_HOST_PROD|" .env
     sed -i "s|^DB_PORT=.*|DB_PORT=$DB_PORT_PROD|" .env
@@ -103,7 +103,7 @@ switch_to_prod() {
     sed -i "s|^DB_USER=.*|DB_USER=$DB_USER_PROD|" .env
     sed -i "s|^DB_PASSWORD=.*|DB_PASSWORD=$DB_PASSWORD_PROD|" .env
     sed -i "s|^DATABASE_URL=.*|DATABASE_URL=$DATABASE_URL_PROD|" .env
-    
+
     echo "✅ Production-Umgebung aktiviert!"
     show_current_env
 }
