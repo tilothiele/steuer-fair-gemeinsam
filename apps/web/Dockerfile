@@ -67,8 +67,8 @@ RUN adduser --system --uid 1001 nextjs
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 
-# Copy public directory from the correct location
-COPY apps/web/public ./public
+# Copy public directory from builder stage
+COPY --from=builder /app/public ./public
 
 USER nextjs
 
