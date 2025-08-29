@@ -20,6 +20,11 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Trust proxy für Rate Limiting in Produktion
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
+
 // Security Middleware
 app.use(helmet());
 
@@ -96,7 +101,14 @@ app.use(cors(corsOptions));
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs
-  message: 'Zu viele Anfragen von dieser IP, bitte versuchen Sie es später erneut.'
+  message: 'Zu viele Anfragen von dieser IP, bitte versuchen Sie es später erneut.',
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  // Trust proxy für korrekte IP-Erkennung
+  skip: (req) => {
+    // Skip rate limiting for health checks
+    return req.path === '/health';
+  }
 });
 app.use('/api/', limiter);
 

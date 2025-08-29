@@ -8,8 +8,8 @@ export const metadata: Metadata = {
   keywords: 'Steuer, Ehegatten, gemeinsame Veranlagung, Steuerersparnis, fair',
   authors: [{ name: 'Steuer Fair Team' }],
   icons: {
-    icon: '/favicon.ico',
-    shortcut: '/favicon.ico',
+    icon: '/favicon.svg',
+    shortcut: '/favicon.svg',
     apple: '/icon.svg',
   },
 };
