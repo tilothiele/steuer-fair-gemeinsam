@@ -1,0 +1,29 @@
+<!-- 
+Dies ist ein Platzhalter-Logo für dunkle Themes.
+Ersetzen Sie diese Datei durch Ihr eigenes SVG-Logo.
+
+Empfohlene Eigenschaften:
+- SVG-Format für Skalierbarkeit
+- Dunkle Farben für dunkle Themes
+- Passend zum "Steuer-Fair" Thema
+- Responsive Design-freundlich
+-->
+
+<svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+  <!-- Hintergrund -->
+  <rect width="200" height="60" fill="#1e293b" rx="8"/>
+  
+  <!-- Steuer-Fair Text -->
+  <text x="100" y="35" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#f8fafc">
+    Steuer-Fair
+  </text>
+  
+  <!-- Untertitel -->
+  <text x="100" y="50" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#94a3b8">
+    Gemeinsam
+  </text>
+  
+  <!-- Dekorative Elemente -->
+  <circle cx="30" cy="30" r="8" fill="#60a5fa" opacity="0.8"/>
+  <circle cx="170" cy="30" r="6" fill="#34d399" opacity="0.8"/>
+</svg>

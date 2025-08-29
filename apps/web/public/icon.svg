@@ -1,0 +1,31 @@
+<!-- 
+Dies ist ein Platzhalter-Icon für die App.
+Ersetzen Sie diese Datei durch Ihr eigenes SVG-Icon.
+
+Empfohlene Eigenschaften:
+- Quadratisches Format (1:1)
+- Einfache, erkennbare Form
+- Passend zum "Steuer-Fair" Thema
+- Skalierbar für verschiedene Größen
+-->
+
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Hintergrund -->
+  <rect width="512" height="512" fill="#3b82f6" rx="64"/>
+  
+  <!-- Zentrale Form (Steuer-Symbol) -->
+  <g transform="translate(256, 256)">
+    <!-- Hauptform -->
+    <rect x="-80" y="-60" width="160" height="120" fill="#ffffff" rx="16"/>
+    
+    <!-- Steuer-Symbol -->
+    <path d="M -40 -20 L 40 -20 L 40 20 L -40 20 Z" fill="#3b82f6"/>
+    <path d="M -20 -40 L 20 -40 L 20 -20 L -20 -20 Z" fill="#10b981"/>
+    <path d="M -20 20 L 20 20 L 20 40 L -20 40 Z" fill="#f59e0b"/>
+    
+    <!-- Text -->
+    <text x="0" y="80" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#ffffff">
+      SF
+    </text>
+  </g>
+</svg>
