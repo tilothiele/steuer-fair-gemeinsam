@@ -70,7 +70,7 @@ jspm_packages/
 
 # Gatsby files
 .cache/
-public
+# public - NOT excluded, needed for static assets
 
 # Storybook build outputs
 .out

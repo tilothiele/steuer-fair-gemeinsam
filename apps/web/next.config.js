@@ -9,6 +9,11 @@ const nextConfig = {
   },
   // Rewrites werden entfernt, da die API-URL jetzt client-seitig ermittelt wird
   // und nicht mehr über Next.js Rewrites geleitet werden muss
+  
+  // Statische Dateien korrekt behandeln
+  experimental: {
+    outputFileTracingRoot: undefined,
+  },
 };
 
 module.exports = nextConfig;
