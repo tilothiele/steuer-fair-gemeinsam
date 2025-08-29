@@ -1,11 +1,17 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import Logo from '../components/UI/Logo';
 
 export const metadata: Metadata = {
   title: 'Steuer Fair Gemeinsam',
   description: 'Faire Aufteilung von Steuererstattungen bei gemeinsamer Veranlagung',
   keywords: 'Steuer, Ehegatten, gemeinsame Veranlagung, Steuerersparnis, fair',
   authors: [{ name: 'Steuer Fair Team' }],
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/icon.svg',
+  },
 };
 
 export const viewport = {
@@ -23,9 +29,9 @@ export default function RootLayout({
       <body className="min-h-screen bg-gray-50">
         <div className="container mx-auto px-4 py-8">
           <header className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 text-center">
-              Steuer Fair Gemeinsam
-            </h1>
+            <div className="flex justify-center mb-4">
+              <Logo className="max-w-xs" />
+            </div>
             <p className="text-gray-600 text-center mt-2">
               Faire Aufteilung von Steuererstattungen bei gemeinsamer Veranlagung
             </p>

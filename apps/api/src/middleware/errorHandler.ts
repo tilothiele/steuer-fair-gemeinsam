@@ -13,8 +13,10 @@ export const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
+  console.log('err', err);
   let error = { ...err };
   error.message = err.message;
+
 
   // Bestimme Status Code
   const statusCode = error.statusCode || 500;
