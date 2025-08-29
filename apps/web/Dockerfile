@@ -32,8 +32,19 @@ COPY apps/web/ ./
 RUN echo "=== DEBUG: Directory structure ===" && \
     pwd && \
     ls -la && \
-    echo "=== Checking public directory ===" && \
-    ls -la public/ && \
+    echo "=== Checking if public directory exists ===" && \
+    if [ -d "public" ]; then \
+        echo "public directory found:" && \
+        ls -la public/; \
+    else \
+        echo "public directory not found, checking apps/web/public:" && \
+        if [ -d "apps/web/public" ]; then \
+            echo "apps/web/public found:" && \
+            ls -la apps/web/public/; \
+        else \
+            echo "Neither public nor apps/web/public found"; \
+        fi; \
+    fi && \
     echo "=== END DEBUG ==="
 
 RUN rm -rf node_modules/@steuer-fair && mkdir -p node_modules/@steuer-fair && cp -r packages/shared node_modules/@steuer-fair/shared
@@ -55,7 +66,9 @@ RUN adduser --system --uid 1001 nextjs
 
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
-COPY --from=builder /app/public ./public
+
+# Copy public directory from the correct location
+COPY apps/web/public ./public
 
 USER nextjs
 
