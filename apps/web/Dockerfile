@@ -29,6 +29,15 @@ COPY apps/web/package.json ./
 COPY apps/web/ ./
 RUN ls -la packages/ && rm -rf node_modules/@steuer-fair && mkdir -p node_modules/@steuer-fair && cp -r packages/shared node_modules/@steuer-fair/shared
 
+# Debug: Check if public directory exists
+RUN echo "=== DEBUG: Checking public directory ===" && \
+    ls -la && \
+    echo "=== Contents of apps/web ===" && \
+    ls -la apps/web/ && \
+    echo "=== Contents of public directory ===" && \
+    ls -la apps/web/public/ && \
+    echo "=== END DEBUG ==="
+
 # Debug: Check what's happening
 RUN echo "=== DEBUG INFO ===" && \
     echo "Current directory:" && pwd && \
@@ -54,7 +63,7 @@ RUN adduser --system --uid 1001 nextjs
 
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
-COPY --from=builder /app/public ./public
+COPY --from=builder /app/apps/web/public ./public
 
 USER nextjs
 
