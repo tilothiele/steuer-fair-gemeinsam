@@ -4,7 +4,7 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import compression from 'compression';
 import dotenv from 'dotenv';
-import session from 'express-session';
+import cookieSession from 'cookie-session';
 import { taxRoutes } from './routes/tax';
 import { profileRoutes } from './routes/profile';
 import { taxDataRoutes } from './routes/tax-data';
@@ -47,18 +47,29 @@ const corsOptions = {
       return callback(null, true);
     }
 
-    // Erlaube alle Subdomains der gleichen Domain
+    // Erlaube alle Origins mit gleicher Domain-Kette
     try {
       const url = new URL(origin);
       const apiUrlObj = new URL(apiUrl);
 
       console.log('url', url);
       console.log('apiUrlObj', apiUrlObj);
-      // Wenn gleiche Domain, erlaube
-      if (url.hostname === apiUrlObj.hostname ||
-          url.hostname.endsWith('.' + apiUrlObj.hostname) ||
-          apiUrlObj.hostname.endsWith('.' + url.hostname)) {
-          console.log('Same domain');
+
+      // Extrahiere Domain-Kette (alles nach dem ersten Punkt)
+      const getDomainChain = (hostname: string) => {
+        const parts = hostname.split('.');
+        return parts.length > 1 ? parts.slice(1).join('.') : hostname;
+      };
+
+      const originDomainChain = getDomainChain(url.hostname);
+      const apiDomainChain = getDomainChain(apiUrlObj.hostname);
+
+      console.log('originDomainChain', originDomainChain);
+      console.log('apiDomainChain', apiDomainChain);
+
+      // Wenn Domain-Kette übereinstimmt, erlaube
+      if (originDomainChain === apiDomainChain) {
+        console.log('Same domain chain');
         return callback(null, true);
       }
     } catch (e) {
@@ -97,7 +108,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 // Session configuration
-app.use(session(sessionConfig));
+app.use(cookieSession(sessionConfig));
 
 // Keycloak middleware
 app.use(keycloak.middleware());

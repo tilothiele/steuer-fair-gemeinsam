@@ -1,4 +1,4 @@
-import session from 'express-session';
+import cookieSession from 'cookie-session';
 import Keycloak from 'keycloak-connect';
 
 const keycloakConfig = {
@@ -11,19 +11,33 @@ const keycloakConfig = {
   'verify-token-audience': false
 };
 
-export const memoryStore = new session.MemoryStore();
-
-export const keycloak = new Keycloak({ store: memoryStore }, keycloakConfig);
-
+// Cookie-basierte Session-Konfiguration
 export const sessionConfig = {
-  secret: process.env.SESSION_SECRET || 'steuer-fair-secret',
-  resave: false,
-  saveUninitialized: true,
-  store: memoryStore,
-  cookie: {
-    maxAge: 1000 * 60 * 10 // 10 minutes
+  name: 'steuer-fair-session',
+  keys: [process.env.SESSION_SECRET || 'steuer-fair-secret'],
+  maxAge: 1000 * 60 * 10, // 10 minutes
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'lax' as const
+};
+
+// Erstelle eine einfache Store-Implementierung für Keycloak
+const cookieStore = {
+  get: (sid: string, callback: (err: any, session?: any) => void) => {
+    // Cookie-Sessions werden automatisch gelesen
+    callback(null, null);
+  },
+  set: (sid: string, session: any, callback: (err?: any) => void) => {
+    // Cookie-Sessions werden automatisch gesetzt
+    callback();
+  },
+  destroy: (sid: string, callback: (err?: any) => void) => {
+    // Cookie-Sessions werden automatisch gelöscht
+    callback();
   }
 };
+
+export const keycloak = new Keycloak({ store: cookieStore }, keycloakConfig);
 
 export const verifyToken = (token: string): Promise<any> => {
   return new Promise((resolve, reject) => {
