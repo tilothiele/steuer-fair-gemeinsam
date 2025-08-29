@@ -41,6 +41,9 @@ ENV NODE_ENV=production
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nodejs
 
+# Erstelle logs Verzeichnis und setze Berechtigungen
+RUN mkdir -p /app/logs && chown -R nodejs:nodejs /app
+
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
