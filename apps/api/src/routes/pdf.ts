@@ -63,9 +63,42 @@ router.post('/download', authenticateToken, async (req: AuthenticatedRequest, re
     logger.info('PDF erfolgreich heruntergeladen', { userId: user?.id, year });
   } catch (error) {
     logger.error('Fehler beim PDF-Download:', error);
+
+    // Strukturierte Fehlermeldung für den Client
+    let clientError = 'PDF-Generierung fehlgeschlagen';
+    let clientDetails = '';
+
+    if (error instanceof Error) {
+      console.log('error on pdf download', error);
+      // Verwende die detaillierte Fehlermeldung aus dem PdfService
+      if ((error as any).details) {
+        clientError = error.message;
+        clientDetails = (error as any).details;
+      } else {
+        // Fallback für andere Fehler
+        const errorStr = error.message.toLowerCase();
+        if (errorStr.includes('chrome') || errorStr.includes('browser')) {
+          clientError = 'PDF-Generator nicht verfügbar';
+          clientDetails = 'Der PDF-Generator ist derzeit nicht verfügbar. Bitte versuchen Sie es später erneut.';
+        } else if (errorStr.includes('timeout')) {
+          clientError = 'PDF-Generierung hat zu lange gedauert';
+          clientDetails = 'Die PDF-Generierung wurde wegen eines Timeouts abgebrochen. Bitte versuchen Sie es erneut.';
+        } else if (errorStr.includes('memory')) {
+          clientError = 'Server überlastet';
+          clientDetails = 'Der Server ist derzeit überlastet. Bitte versuchen Sie es später erneut.';
+        } else {
+          clientError = 'PDF-Generierung fehlgeschlagen';
+          clientDetails = 'Es gab ein unerwartetes Problem bei der PDF-Generierung.';
+        }
+      }
+    }
+
     res.status(500).json({
       success: false,
-      error: 'PDF-Generierung fehlgeschlagen'
+      error: clientError,
+      details: clientDetails,
+      timestamp: new Date().toISOString(),
+      requestId: (req as any).requestId || 'unknown'
     });
   }
 });

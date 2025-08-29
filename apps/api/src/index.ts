@@ -57,8 +57,8 @@ const corsOptions = {
       const url = new URL(origin);
       const apiUrlObj = new URL(apiUrl);
 
-      console.log('url', url);
-      console.log('apiUrlObj', apiUrlObj);
+      // console.log('url', url);
+      // console.log('apiUrlObj', apiUrlObj);
 
       // Extrahiere Domain-Kette (alles nach dem ersten Punkt)
       const getDomainChain = (hostname: string) => {
@@ -69,12 +69,12 @@ const corsOptions = {
       const originDomainChain = getDomainChain(url.hostname);
       const apiDomainChain = getDomainChain(apiUrlObj.hostname);
 
-      console.log('originDomainChain', originDomainChain);
-      console.log('apiDomainChain', apiDomainChain);
+      // console.log('originDomainChain', originDomainChain);
+      // console.log('apiDomainChain', apiDomainChain);
 
       // Wenn Domain-Kette übereinstimmt, erlaube
       if (originDomainChain === apiDomainChain) {
-        console.log('Same domain chain');
+        // console.log('Same domain chain');
         return callback(null, true);
       }
     } catch (e) {

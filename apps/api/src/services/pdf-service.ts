@@ -63,8 +63,71 @@ export class PdfService {
       
       return Buffer.from(pdf);
     } catch (error) {
-      logger.error('Fehler bei PDF-Generierung:', error);
-      throw new Error('PDF-Generierung fehlgeschlagen');
+      // Detaillierte Fehleranalyse für bessere Diagnose
+      let errorMessage = 'PDF-Generierung fehlgeschlagen';
+      let errorDetails = '';
+      
+      if (error instanceof Error) {
+        const errorStr = error.message.toLowerCase();
+        
+        // Chrome/Browser-spezifische Fehler
+        if (errorStr.includes('chrome') || errorStr.includes('chromium') || errorStr.includes('browser')) {
+          if (errorStr.includes('launch') || errorStr.includes('start')) {
+            errorMessage = 'Chrome-Browser konnte nicht gestartet werden';
+            errorDetails = 'Der PDF-Generator benötigt Chrome/Chromium, das möglicherweise nicht installiert ist oder nicht gestartet werden kann.';
+          } else if (errorStr.includes('sandbox')) {
+            errorMessage = 'Chrome-Sandbox-Probleme';
+            errorDetails = 'Chrome kann nicht im Sandbox-Modus gestartet werden. Dies ist ein bekanntes Problem in Docker-Containern.';
+          } else if (errorStr.includes('executable') || errorStr.includes('path')) {
+            errorMessage = 'Chrome-Executable nicht gefunden';
+            errorDetails = 'Der Chrome-Browser wurde nicht gefunden. Bitte stellen Sie sicher, dass Chrome/Chromium installiert ist.';
+          }
+        }
+        // Memory/Resource-Fehler
+        else if (errorStr.includes('memory') || errorStr.includes('out of memory')) {
+          errorMessage = 'Nicht genügend Speicher für PDF-Generierung';
+          errorDetails = 'Der Server hat nicht genügend Speicher, um die PDF zu generieren.';
+        }
+        // Timeout-Fehler
+        else if (errorStr.includes('timeout') || errorStr.includes('timed out')) {
+          errorMessage = 'PDF-Generierung hat zu lange gedauert';
+          errorDetails = 'Die PDF-Generierung wurde wegen eines Timeouts abgebrochen.';
+        }
+        // Netzwerk-Fehler
+        else if (errorStr.includes('network') || errorStr.includes('connection')) {
+          errorMessage = 'Netzwerk-Fehler bei PDF-Generierung';
+          errorDetails = 'Es gab ein Problem mit der Netzwerkverbindung während der PDF-Generierung.';
+        }
+        // Allgemeine Puppeteer-Fehler
+        else if (errorStr.includes('puppeteer') || errorStr.includes('page')) {
+          errorMessage = 'Puppeteer-Fehler bei PDF-Generierung';
+          errorDetails = 'Es gab ein Problem mit dem PDF-Generator (Puppeteer).';
+        }
+        // Unbekannte Fehler
+        else {
+          errorMessage = 'Unbekannter Fehler bei PDF-Generierung';
+          errorDetails = `Unerwarteter Fehler: ${error.message}`;
+        }
+      }
+      
+      // Logging mit detaillierten Informationen
+      logger.error('Fehler bei PDF-Generierung:', {
+        error: error instanceof Error ? error.message : 'Unbekannter Fehler',
+        stack: error instanceof Error ? error.stack : undefined,
+        userLoginId,
+        year,
+        errorMessage,
+        errorDetails
+      });
+      
+      // Erstelle strukturierte Fehlermeldung
+      const structuredError = new Error(errorMessage);
+      (structuredError as any).details = errorDetails;
+      (structuredError as any).originalError = error instanceof Error ? error.message : 'Unbekannter Fehler';
+      (structuredError as any).userLoginId = userLoginId;
+      (structuredError as any).year = year;
+      
+      throw structuredError;
     }
   }
 
