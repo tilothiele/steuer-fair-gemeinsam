@@ -5,6 +5,7 @@ import ProfileForm from '../../components/Profile/ProfileForm';
 import { KeycloakUserHeader } from '../../components/Auth/KeycloakUserHeader';
 import { initKeycloak, isAuthenticated, getUsername, getUserEmail, getLoginId } from '../../config/keycloak';
 import { User } from '@steuer-fair/shared';
+import { ProfileApiService } from '../../services/api';
 
 export default function ProfilePage() {
   const [user, setUser] = useState<User | null>(null);
@@ -16,14 +17,46 @@ export default function ProfilePage() {
         await initKeycloak();
         
         if (isAuthenticated()) {
-          const userData: User = {
-            id: 'keycloak-user',
-            loginId: getLoginId(),
-            name: getUsername(),
-            steuernummer: undefined,
-            createdAt: new Date(),
-            lastLogin: new Date()
-          };
+          const loginId = getLoginId();
+          
+          // Versuche Profil aus der Datenbank zu laden
+          let userData: User;
+          
+          try {
+            const dbUser = await ProfileApiService.getProfile(loginId);
+            
+            if (dbUser) {
+              // Verwende Daten aus der Datenbank
+              userData = {
+                ...dbUser,
+                // Fallback auf Keycloak-Daten falls DB-Daten unvollständig
+                name: dbUser.name || getUsername(),
+                loginId: dbUser.loginId || loginId
+              };
+            } else {
+              // Erstelle neuen User mit Keycloak-Daten
+              userData = {
+                id: 'keycloak-user',
+                loginId: loginId,
+                name: getUsername(),
+                steuernummer: undefined,
+                createdAt: new Date(),
+                lastLogin: new Date()
+              };
+            }
+          } catch (dbError) {
+            console.warn('Fehler beim Laden des Profils aus der Datenbank:', dbError);
+            // Fallback auf Keycloak-Daten
+            userData = {
+              id: 'keycloak-user',
+              loginId: loginId,
+              name: getUsername(),
+              steuernummer: undefined,
+              createdAt: new Date(),
+              lastLogin: new Date()
+            };
+          }
+          
           setUser(userData);
         } else {
           window.location.href = '/';

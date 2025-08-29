@@ -280,6 +280,29 @@ export class TaxApiService {
 
 export class ProfileApiService {
   /**
+   * Lädt das Benutzerprofil aus der Datenbank
+   */
+  static async getProfile(loginId: string): Promise<User | null> {
+    try {
+      const response = await apiClient.get(`/api/profile/${loginId}`);
+
+      if (response.data.success && response.data.user) {
+        return response.data.user;
+      } else {
+        // Wenn kein Profil gefunden wird, geben wir null zurück
+        return null;
+      }
+    } catch (error) {
+      console.error('Profil-Laden Fehler:', error);
+      // Bei 404 (Profil nicht gefunden) geben wir null zurück
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        return null;
+      }
+      throw error;
+    }
+  }
+
+  /**
    * Aktualisiert das Benutzerprofil
    */
   static async updateProfile(loginId: string, name?: string, steuernummer?: string): Promise<User> {
