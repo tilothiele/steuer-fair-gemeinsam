@@ -22,10 +22,56 @@ const PORT = process.env.PORT || 3001;
 
 // Security Middleware
 app.use(helmet());
-app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-  credentials: true
-}));
+
+// CORS Configuration für dynamische Frontend-URLs
+const corsOptions = {
+  origin: function (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) {
+    // Erlaube requests ohne origin (z.B. Postman, curl)
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    // Lokale Entwicklung
+    if (origin === 'http://localhost:3000' || origin === 'http://127.0.0.1:3000') {
+      return callback(null, true);
+    }
+
+    // Dynamische Frontend-URLs basierend auf API-URL
+    const apiUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+    
+    // Wenn FRONTEND_URL gesetzt ist, erlaube diese
+    if (apiUrl && origin.startsWith(apiUrl.replace(':3001', ':3000'))) {
+      return callback(null, true);
+    }
+
+    // Erlaube alle Subdomains der gleichen Domain
+    try {
+      const url = new URL(origin);
+      const apiUrlObj = new URL(apiUrl);
+      
+      // Wenn gleiche Domain, erlaube
+      if (url.hostname === apiUrlObj.hostname || 
+          url.hostname.endsWith('.' + apiUrlObj.hostname) ||
+          apiUrlObj.hostname.endsWith('.' + url.hostname)) {
+        return callback(null, true);
+      }
+    } catch (e) {
+      // Bei URL-Parsing-Fehlern, erlaube nicht
+    }
+
+    // Fallback: Erlaube alle Origins in Entwicklung
+    if (process.env.NODE_ENV === 'development') {
+      return callback(null, true);
+    }
+
+    callback(new Error('CORS nicht erlaubt'));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+};
+
+app.use(cors(corsOptions));
 
 // Rate Limiting
 const limiter = rateLimit({
@@ -50,6 +96,9 @@ app.use(keycloak.middleware());
 
 // Request logging
 app.use(requestLogger);
+
+// Preflight handler für OPTIONS requests
+app.options('*', cors(corsOptions));
 
 // Health check
 app.get('/health', (req, res) => {
