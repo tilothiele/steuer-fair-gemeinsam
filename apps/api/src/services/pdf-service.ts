@@ -13,122 +13,162 @@ export class PdfService {
     userSteuernummer?: string,
     userName?: string
   ): Promise<Buffer> {
-    try {
-      const browser = await puppeteer.launch({
-        headless: true,
-        args: [
-          '--no-sandbox',
-          '--disable-setuid-sandbox',
-          '--disable-dev-shm-usage',
-          '--disable-gpu',
-          '--no-first-run',
-          '--no-zygote',
-          '--single-process',
-          '--disable-extensions'
-        ],
-        executablePath: process.env.CHROME_BIN || undefined
-      });
+    const maxRetries = 3;
+    let lastError: Error | null = null;
 
-      const page = await browser.newPage();
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      let browser: any = null;
       
-      // HTML-Template für die PDF
-      const html = this.generateHtmlTemplate(
-        partnerA,
-        partnerB,
-        jointData,
-        result,
-        year,
-        userLoginId,
-        userSteuernummer,
-        userName
-      );
+      try {
+        logger.info(`PDF-Generierung Versuch ${attempt}/${maxRetries}`, { userLoginId, year });
 
-      await page.setContent(html, { waitUntil: 'networkidle0' });
+        browser = await puppeteer.launch({
+          headless: true,
+          args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-gpu',
+            '--no-first-run',
+            '--no-zygote',
+            '--single-process',
+            '--disable-extensions',
+            '--disable-background-timer-throttling',
+            '--disable-backgrounding-occluded-windows',
+            '--disable-renderer-backgrounding'
+          ],
+          executablePath: process.env.CHROME_BIN || undefined
+        });
 
-      // PDF generieren
-      const pdf = await page.pdf({
-        format: 'A4',
-        margin: {
-          top: '20mm',
-          right: '20mm',
-          bottom: '20mm',
-          left: '20mm'
-        },
-        printBackground: true
-      });
-
-      await browser.close();
-      
-      logger.info('PDF erfolgreich generiert', { userLoginId, year });
-      
-      return Buffer.from(pdf);
-    } catch (error) {
-      // Detaillierte Fehleranalyse für bessere Diagnose
-      let errorMessage = 'PDF-Generierung fehlgeschlagen';
-      let errorDetails = '';
-      
-      if (error instanceof Error) {
-        const errorStr = error.message.toLowerCase();
+        const page = await browser.newPage();
         
-        // Chrome/Browser-spezifische Fehler
-        if (errorStr.includes('chrome') || errorStr.includes('chromium') || errorStr.includes('browser')) {
-          if (errorStr.includes('launch') || errorStr.includes('start')) {
-            errorMessage = 'Chrome-Browser konnte nicht gestartet werden';
-            errorDetails = 'Der PDF-Generator benötigt Chrome/Chromium, das möglicherweise nicht installiert ist oder nicht gestartet werden kann.';
-          } else if (errorStr.includes('sandbox')) {
-            errorMessage = 'Chrome-Sandbox-Probleme';
-            errorDetails = 'Chrome kann nicht im Sandbox-Modus gestartet werden. Dies ist ein bekanntes Problem in Docker-Containern.';
-          } else if (errorStr.includes('executable') || errorStr.includes('path')) {
-            errorMessage = 'Chrome-Executable nicht gefunden';
-            errorDetails = 'Der Chrome-Browser wurde nicht gefunden. Bitte stellen Sie sicher, dass Chrome/Chromium installiert ist.';
+        // HTML-Template für die PDF
+        const html = this.generateHtmlTemplate(
+          partnerA,
+          partnerB,
+          jointData,
+          result,
+          year,
+          userLoginId,
+          userSteuernummer,
+          userName
+        );
+
+        await page.setContent(html, { waitUntil: 'networkidle0' });
+
+        // PDF generieren
+        const pdf = await page.pdf({
+          format: 'A4',
+          margin: {
+            top: '20mm',
+            right: '20mm',
+            bottom: '20mm',
+            left: '20mm'
+          },
+          printBackground: true
+        });
+
+        await browser.close();
+        
+        logger.info('PDF erfolgreich generiert', { userLoginId, year, attempt });
+        
+        return Buffer.from(pdf);
+          } catch (error) {
+        // Browser sicher schließen
+        if (browser) {
+          try {
+            await browser.close();
+          } catch (closeError) {
+            logger.warn('Fehler beim Schließen des Browsers:', closeError);
           }
         }
-        // Memory/Resource-Fehler
-        else if (errorStr.includes('memory') || errorStr.includes('out of memory')) {
-          errorMessage = 'Nicht genügend Speicher für PDF-Generierung';
-          errorDetails = 'Der Server hat nicht genügend Speicher, um die PDF zu generieren.';
+
+        lastError = error instanceof Error ? error : new Error('Unbekannter Fehler');
+        
+        // Detaillierte Fehleranalyse für bessere Diagnose
+        let errorMessage = 'PDF-Generierung fehlgeschlagen';
+        let errorDetails = '';
+        
+        if (error instanceof Error) {
+          const errorStr = error.message.toLowerCase();
+          
+          // Chrome/Browser-spezifische Fehler
+          if (errorStr.includes('chrome') || errorStr.includes('chromium') || errorStr.includes('browser')) {
+            if (errorStr.includes('launch') || errorStr.includes('start')) {
+              errorMessage = 'Chrome-Browser konnte nicht gestartet werden';
+              errorDetails = 'Der PDF-Generator benötigt Chrome/Chromium, das möglicherweise nicht installiert ist oder nicht gestartet werden kann.';
+            } else if (errorStr.includes('sandbox')) {
+              errorMessage = 'Chrome-Sandbox-Probleme';
+              errorDetails = 'Chrome kann nicht im Sandbox-Modus gestartet werden. Dies ist ein bekanntes Problem in Docker-Containern.';
+            } else if (errorStr.includes('executable') || errorStr.includes('path')) {
+              errorMessage = 'Chrome-Executable nicht gefunden';
+              errorDetails = 'Der Chrome-Browser wurde nicht gefunden. Bitte stellen Sie sicher, dass Chrome/Chromium installiert ist.';
+            }
+          }
+          // Memory/Resource-Fehler
+          else if (errorStr.includes('memory') || errorStr.includes('out of memory')) {
+            errorMessage = 'Nicht genügend Speicher für PDF-Generierung';
+            errorDetails = 'Der Server hat nicht genügend Speicher, um die PDF zu generieren.';
+          }
+          // Timeout-Fehler
+          else if (errorStr.includes('timeout') || errorStr.includes('timed out')) {
+            errorMessage = 'PDF-Generierung hat zu lange gedauert';
+            errorDetails = 'Die PDF-Generierung wurde wegen eines Timeouts abgebrochen.';
+          }
+          // Netzwerk-Fehler
+          else if (errorStr.includes('network') || errorStr.includes('connection')) {
+            errorMessage = 'Netzwerk-Fehler bei PDF-Generierung';
+            errorDetails = 'Es gab ein Problem mit der Netzwerkverbindung während der PDF-Generierung.';
+          }
+          // Puppeteer Target-Fehler
+          else if (errorStr.includes('target') || errorStr.includes('targetcloseerror')) {
+            errorMessage = 'Chrome-Verbindung unerwartet geschlossen';
+            errorDetails = 'Die Verbindung zu Chrome wurde unerwartet geschlossen. Dies kann bei hoher Serverlast oder Chrome-Problemen auftreten.';
+          }
+          // Allgemeine Puppeteer-Fehler
+          else if (errorStr.includes('puppeteer') || errorStr.includes('page') || errorStr.includes('protocol error')) {
+            errorMessage = 'Puppeteer-Fehler bei PDF-Generierung';
+            errorDetails = 'Es gab ein Problem mit dem PDF-Generator (Puppeteer).';
+          }
+          // Unbekannte Fehler
+          else {
+            errorMessage = 'Unbekannter Fehler bei PDF-Generierung';
+            errorDetails = `Unerwarteter Fehler: ${error.message}`;
+          }
         }
-        // Timeout-Fehler
-        else if (errorStr.includes('timeout') || errorStr.includes('timed out')) {
-          errorMessage = 'PDF-Generierung hat zu lange gedauert';
-          errorDetails = 'Die PDF-Generierung wurde wegen eines Timeouts abgebrochen.';
+        
+        // Logging mit detaillierten Informationen
+        logger.warn(`PDF-Generierung Versuch ${attempt}/${maxRetries} fehlgeschlagen:`, {
+          error: error instanceof Error ? error.message : 'Unbekannter Fehler',
+          stack: error instanceof Error ? error.stack : undefined,
+          userLoginId,
+          year,
+          attempt,
+          maxRetries,
+          errorMessage,
+          errorDetails
+        });
+
+        // Wenn es der letzte Versuch ist, Fehler werfen
+        if (attempt === maxRetries) {
+          // Erstelle strukturierte Fehlermeldung
+          const structuredError = new Error(errorMessage);
+          (structuredError as any).details = errorDetails;
+          (structuredError as any).originalError = error instanceof Error ? error.message : 'Unbekannter Fehler';
+          (structuredError as any).userLoginId = userLoginId;
+          (structuredError as any).year = year;
+          (structuredError as any).attempts = maxRetries;
+          
+          throw structuredError;
         }
-        // Netzwerk-Fehler
-        else if (errorStr.includes('network') || errorStr.includes('connection')) {
-          errorMessage = 'Netzwerk-Fehler bei PDF-Generierung';
-          errorDetails = 'Es gab ein Problem mit der Netzwerkverbindung während der PDF-Generierung.';
-        }
-        // Allgemeine Puppeteer-Fehler
-        else if (errorStr.includes('puppeteer') || errorStr.includes('page')) {
-          errorMessage = 'Puppeteer-Fehler bei PDF-Generierung';
-          errorDetails = 'Es gab ein Problem mit dem PDF-Generator (Puppeteer).';
-        }
-        // Unbekannte Fehler
-        else {
-          errorMessage = 'Unbekannter Fehler bei PDF-Generierung';
-          errorDetails = `Unerwarteter Fehler: ${error.message}`;
-        }
+
+        // Kurze Pause vor dem nächsten Versuch
+        await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
       }
-      
-      // Logging mit detaillierten Informationen
-      logger.error('Fehler bei PDF-Generierung:', {
-        error: error instanceof Error ? error.message : 'Unbekannter Fehler',
-        stack: error instanceof Error ? error.stack : undefined,
-        userLoginId,
-        year,
-        errorMessage,
-        errorDetails
-      });
-      
-      // Erstelle strukturierte Fehlermeldung
-      const structuredError = new Error(errorMessage);
-      (structuredError as any).details = errorDetails;
-      (structuredError as any).originalError = error instanceof Error ? error.message : 'Unbekannter Fehler';
-      (structuredError as any).userLoginId = userLoginId;
-      (structuredError as any).year = year;
-      
-      throw structuredError;
     }
+
+    // Sollte nie erreicht werden, aber für TypeScript
+    throw lastError || new Error('PDF-Generierung fehlgeschlagen nach allen Versuchen');
   }
 
   private static generateHtmlTemplate(

@@ -69,7 +69,6 @@ router.post('/download', authenticateToken, async (req: AuthenticatedRequest, re
     let clientDetails = '';
 
     if (error instanceof Error) {
-      console.log('error on pdf download', error);
       // Verwende die detaillierte Fehlermeldung aus dem PdfService
       if ((error as any).details) {
         clientError = error.message;
