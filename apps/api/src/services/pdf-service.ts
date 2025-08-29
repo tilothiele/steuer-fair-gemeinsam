@@ -18,9 +18,16 @@ export class PdfService {
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       let browser: any = null;
-      
+
       try {
         logger.info(`PDF-Generierung Versuch ${attempt}/${maxRetries}`, { userLoginId, year });
+
+        // Debug: Chrome-Pfad loggen
+        logger.info('Chrome-Konfiguration:', {
+          CHROME_BIN: process.env.CHROME_BIN,
+          CHROME_PATH: process.env.CHROME_PATH,
+          attempt
+        });
 
         browser = await puppeteer.launch({
           headless: true,
@@ -35,13 +42,35 @@ export class PdfService {
             '--disable-extensions',
             '--disable-background-timer-throttling',
             '--disable-backgrounding-occluded-windows',
-            '--disable-renderer-backgrounding'
+            '--disable-renderer-backgrounding',
+            '--disable-web-security',
+            '--disable-features=VizDisplayCompositor',
+            '--disable-ipc-flooding-protection',
+            '--disable-default-apps',
+            '--disable-sync',
+            '--disable-translate',
+            '--hide-scrollbars',
+            '--mute-audio',
+            '--no-default-browser-check',
+            '--disable-component-extensions-with-background-pages',
+            '--disable-background-networking',
+            '--disable-background-timer-throttling',
+            '--disable-client-side-phishing-detection',
+            '--disable-hang-monitor',
+            '--disable-prompt-on-repost',
+            '--disable-domain-reliability',
+            '--disable-features=TranslateUI',
+            '--disable-ipc-flooding-protection',
+            '--no-zygote',
+            '--single-process'
           ],
-          executablePath: process.env.CHROME_BIN || undefined
+          executablePath: process.env.CHROME_BIN || undefined,
+          timeout: 30000,
+          protocolTimeout: 30000
         });
 
         const page = await browser.newPage();
-        
+
         // HTML-Template für die PDF
         const html = this.generateHtmlTemplate(
           partnerA,
@@ -69,9 +98,9 @@ export class PdfService {
         });
 
         await browser.close();
-        
+
         logger.info('PDF erfolgreich generiert', { userLoginId, year, attempt });
-        
+
         return Buffer.from(pdf);
           } catch (error) {
         // Browser sicher schließen
@@ -84,14 +113,14 @@ export class PdfService {
         }
 
         lastError = error instanceof Error ? error : new Error('Unbekannter Fehler');
-        
+
         // Detaillierte Fehleranalyse für bessere Diagnose
         let errorMessage = 'PDF-Generierung fehlgeschlagen';
         let errorDetails = '';
-        
+
         if (error instanceof Error) {
           const errorStr = error.message.toLowerCase();
-          
+
           // Chrome/Browser-spezifische Fehler
           if (errorStr.includes('chrome') || errorStr.includes('chromium') || errorStr.includes('browser')) {
             if (errorStr.includes('launch') || errorStr.includes('start')) {
@@ -136,7 +165,7 @@ export class PdfService {
             errorDetails = `Unerwarteter Fehler: ${error.message}`;
           }
         }
-        
+
         // Logging mit detaillierten Informationen
         logger.warn(`PDF-Generierung Versuch ${attempt}/${maxRetries} fehlgeschlagen:`, {
           error: error instanceof Error ? error.message : 'Unbekannter Fehler',
@@ -158,7 +187,7 @@ export class PdfService {
           (structuredError as any).userLoginId = userLoginId;
           (structuredError as any).year = year;
           (structuredError as any).attempts = maxRetries;
-          
+
           throw structuredError;
         }
 
@@ -181,7 +210,7 @@ export class PdfService {
     userSteuernummer?: string,
     userName?: string
   ): string {
-    const formatCurrency = (amount: number) => 
+    const formatCurrency = (amount: number) =>
       new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(amount);
 
     return `
@@ -327,7 +356,7 @@ export class PdfService {
 
         <div class="section">
           <h2>Eingabedaten</h2>
-          
+
           <div class="partner-grid">
             <div class="partner-card">
               <h3>Partner A${partnerA.name ? ` - ${partnerA.name}` : ''}</h3>
@@ -431,10 +460,10 @@ export class PdfService {
 
         <div class="section">
           <h2>Berechnungsergebnis</h2>
-          
+
           <div class="plausibility ${result.plausibilityCheck ? 'success' : 'error'}">
-            ${result.plausibilityCheck 
-              ? '✅ Plausibilitätsprüfung erfolgreich' 
+            ${result.plausibilityCheck
+              ? '✅ Plausibilitätsprüfung erfolgreich'
               : `❌ Plausibilitätsprüfung fehlgeschlagen: ${result.plausibilityError || 'Unbekannter Fehler'}`
             }
           </div>
