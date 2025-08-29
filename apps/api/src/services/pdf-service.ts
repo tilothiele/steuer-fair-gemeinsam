@@ -29,6 +29,10 @@ export class PdfService {
           attempt
         });
 
+        // Puppeteer Debug-Logging aktivieren
+        process.env.DEBUG = 'puppeteer:*';
+        logger.info('Puppeteer Debug-Logging aktiviert');
+
         browser = await puppeteer.launch({
           headless: true,
           args: [
@@ -62,7 +66,27 @@ export class PdfService {
             '--disable-features=TranslateUI',
             '--disable-ipc-flooding-protection',
             '--no-zygote',
-            '--single-process'
+            '--single-process',
+            // Chrome Debug-Logging aktivieren
+            '--enable-logging',
+            '--v=1',
+            '--vmodule=*/chrome/*=1',
+            '--log-level=0',
+            '--enable-logging=stderr',
+            '--log-file=/tmp/chrome-debug.log',
+            '--disable-logging-redirect',
+            '--enable-logging-redirect',
+            '--log-to-stderr',
+            '--enable-logging-redirect=1',
+            '--enable-logging-redirect=2',
+            '--enable-logging-redirect=3',
+            '--enable-logging-redirect=4',
+            '--enable-logging-redirect=5',
+            '--enable-logging-redirect=6',
+            '--enable-logging-redirect=7',
+            '--enable-logging-redirect=8',
+            '--enable-logging-redirect=9',
+            '--enable-logging-redirect=10'
           ],
           executablePath: process.env.CHROME_BIN || undefined,
           timeout: 30000,
