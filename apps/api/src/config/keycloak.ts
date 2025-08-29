@@ -1,5 +1,6 @@
 import cookieSession from 'cookie-session';
 import Keycloak from 'keycloak-connect';
+import { logger } from '../utils/logger';
 
 const keycloakConfig = {
   realm: process.env.KEYCLOAK_REALM || 'TTSOFT',
@@ -47,7 +48,11 @@ export const verifyToken = (token: string): Promise<any> => {
         resolve(grant);
       })
       .catch((error) => {
-        console.error('Token validation error:', error);
+        // Besseres Logging für Fallback-Szenarien
+        logger.info('Token validation failed, using fallback', {
+          error: error.message,
+          fallback: 'direct-token-parsing'
+        });
         // Für public clients können wir auch ohne strenge Validierung arbeiten
         // Wir extrahieren die Token-Informationen direkt
         try {
