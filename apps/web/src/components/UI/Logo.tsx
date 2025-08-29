@@ -1,5 +1,3 @@
-import Image from 'next/image';
-
 interface LogoProps {
   className?: string;
   darkMode?: boolean;
@@ -10,13 +8,11 @@ export default function Logo({ className = '', darkMode = false }: LogoProps) {
   
   return (
     <div className={`flex items-center ${className}`}>
-      <Image
+      <img
         src={logoSrc}
         alt="Steuer-Fair Logo"
-        width={200}
-        height={60}
-        className="h-auto w-auto"
-        priority
+        className="w-auto h-auto max-w-[200px]"
+        style={{ height: 'auto' }}
       />
     </div>
   );
