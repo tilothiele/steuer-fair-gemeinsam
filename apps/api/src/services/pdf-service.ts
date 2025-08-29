@@ -42,7 +42,7 @@ export class PdfService {
             '--disable-gpu',
             '--no-first-run',
             '--no-zygote',
-            '--single-process',
+            //'--single-process',
             '--disable-extensions',
             '--disable-background-timer-throttling',
             '--disable-backgrounding-occluded-windows',
@@ -127,6 +127,7 @@ export class PdfService {
 
         return Buffer.from(pdf);
           } catch (error) {
+            logger.error('Error in PdfService.generateTaxCalculationPdf:', error);
         // Browser sicher schließen
         if (browser) {
           try {
