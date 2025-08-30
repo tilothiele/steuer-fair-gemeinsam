@@ -69,6 +69,4 @@ EXPOSE 3001
 
 ENV PORT=3001
 
-WORKDIR /app/dist
-
-CMD ["node", "index.js"]
+CMD ["node", "dist/index.js"]

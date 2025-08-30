@@ -1,6 +1,6 @@
 import { Flyway } from 'node-flyway';
 import { logger } from '../utils/logger';
-import { flywayConfig, pool } from '../config/database';
+import { flywayConfig } from '../config/database';
 
 export class MigrationService {
   private flyway: Flyway;

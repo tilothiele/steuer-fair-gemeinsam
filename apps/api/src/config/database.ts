@@ -43,5 +43,7 @@ export const flywayConfig = {
   user: dbConfig.user || 'postgres',
   password: typeof dbConfig.password === 'string' ? dbConfig.password : 'postgres',
   defaultSchema: 'public',
-  migrationLocations: ['migrations']
+  migrationLocations: process.env.FLYWAY_MIGRATION_LOCATIONS
+    ? process.env.FLYWAY_MIGRATION_LOCATIONS.split(',').map(loc => loc.trim())
+    : ['migrations']
 };
