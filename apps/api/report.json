@@ -1298,6 +1298,90 @@
       "operation": "migrate",
       "exception": null,
       "licenseFailed": false
+    },
+    {
+      "schemaVersion": "1",
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "2025-08-30T09:45:04.535123Z",
+          "state": "Success",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "steuer_fair_user",
+          "executionTime": 37
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": false,
+      "timestamp": "2025-08-30T13:20:54.952352396",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "initialSchemaVersion": "1",
+      "targetSchemaVersion": null,
+      "schemaName": "",
+      "migrations": [],
+      "migrationsExecuted": 0,
+      "success": true,
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "warnings": [],
+      "timestamp": "2025-08-30T13:20:56.075797584",
+      "operation": "migrate",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": "1",
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "2025-08-30T09:45:04.535123Z",
+          "state": "Success",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "steuer_fair_user",
+          "executionTime": 37
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": false,
+      "timestamp": "2025-08-30T13:23:48.825256055",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "initialSchemaVersion": "1",
+      "targetSchemaVersion": null,
+      "schemaName": "",
+      "migrations": [],
+      "migrationsExecuted": 0,
+      "success": true,
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "warnings": [],
+      "timestamp": "2025-08-30T13:23:49.948830872",
+      "operation": "migrate",
+      "exception": null,
+      "licenseFailed": false
     }
   ]
 }
