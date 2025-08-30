@@ -9,10 +9,13 @@ import { taxRoutes } from './routes/tax';
 import { profileRoutes } from './routes/profile';
 import { taxDataRoutes } from './routes/tax-data';
 import { pdfRoutes } from './routes/pdf';
+import { migrationRoutes } from './routes/migration';
 import { errorHandler } from './middleware/errorHandler';
 import { requestLogger } from './middleware/requestLogger';
 import { logger } from './utils/logger';
 import { sessionConfig, keycloak } from './config/keycloak';
+import { testConnection } from './config/database';
+import { MigrationService } from './services/migration-service';
 
 // Load environment variables
 dotenv.config();
@@ -145,6 +148,7 @@ app.use('/api/tax', taxRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/tax-data', taxDataRoutes);
 app.use('/api/pdf', pdfRoutes);
+app.use('/api/migration', migrationRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {
@@ -176,12 +180,45 @@ process.on('unhandledRejection', (reason, promise) => {
   process.exit(1);
 });
 
-// Start server
-app.listen(PORT, () => {
-  logger.info(`🚀 Steuer-Fair API Server läuft auf Port ${PORT}`);
-  logger.info(`📊 Health Check: http://localhost:${PORT}/health`);
-  logger.info(`🔗 API Base URL: http://localhost:${PORT}/api`);
-});
+// Start server mit Datenbank-Migration
+const startServer = async () => {
+  try {
+    // Datenbank-Verbindung testen
+    const dbConnected = await testConnection();
+    if (!dbConnected) {
+      logger.error('Datenbank-Verbindung fehlgeschlagen, Server wird nicht gestartet');
+      process.exit(1);
+    }
+
+    // Migration-Service initialisieren (nur wenn USE_FLYWAY=true)
+    const useFlyway = process.env.USE_FLYWAY === 'true';
+    if (useFlyway) {
+      logger.info('Flyway-Migration aktiviert');
+      const migrationService = new MigrationService();
+
+      // Migration-Status prüfen
+      await migrationService.info();
+
+      // Migration ausführen, falls ausstehende Migrationen vorhanden sind
+      await migrationService.migrate();
+    } else {
+      logger.info('Flyway-Migration deaktiviert (USE_FLYWAY nicht auf true gesetzt)');
+    }
+
+    // Server starten
+    app.listen(PORT, () => {
+      logger.info(`🚀 Steuer-Fair API Server läuft auf Port ${PORT}`);
+      logger.info(`📊 Health Check: http://localhost:${PORT}/health`);
+      logger.info(`🔗 API Base URL: http://localhost:${PORT}/api`);
+      logger.info(`🗄️  Datenbank: ${process.env.DB_HOST || 'localhost'}:${process.env.DB_PORT || '5432'}/${process.env.DB_NAME || 'steuer_fair'}`);
+    });
+  } catch (error) {
+    logger.error('Server-Start fehlgeschlagen:', error);
+    process.exit(1);
+  }
+};
+
+startServer();
 
 // Graceful shutdown
 process.on('SIGTERM', () => {

@@ -1,0 +1,1303 @@
+{
+  "individualResults": [
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial schema",
+          "type": "SQL",
+          "installedOnUTC": "",
+          "state": "Pending",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial_schema.sql",
+          "undoFilepath": "",
+          "installedBy": "",
+          "executionTime": 0
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": false,
+      "timestamp": "2025-08-30T09:22:06.021794369",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial schema",
+          "type": "SQL",
+          "installedOnUTC": "",
+          "state": "Pending",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial_schema.sql",
+          "undoFilepath": "",
+          "installedBy": "",
+          "executionTime": 0
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": false,
+      "timestamp": "2025-08-30T09:22:07.033954135",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": false,
+      "timestamp": "2025-08-30T09:30:36.653718186",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": false,
+      "timestamp": "2025-08-30T09:30:37.768991585",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial schema",
+          "type": "SQL",
+          "installedOnUTC": "",
+          "state": "Pending",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial_schema.sql",
+          "undoFilepath": "",
+          "installedBy": "",
+          "executionTime": 0
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": false,
+      "timestamp": "2025-08-30T09:34:52.944904611",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial schema",
+          "type": "SQL",
+          "installedOnUTC": "",
+          "state": "Pending",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial_schema.sql",
+          "undoFilepath": "",
+          "installedBy": "",
+          "executionTime": 0
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": false,
+      "timestamp": "2025-08-30T09:34:54.024102508",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": false,
+      "timestamp": "2025-08-30T09:36:19.665614381",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": false,
+      "timestamp": "2025-08-30T09:36:20.701426207",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": false,
+      "timestamp": "2025-08-30T09:37:05.692086508",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": false,
+      "timestamp": "2025-08-30T09:37:06.859661091",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": false,
+      "timestamp": "2025-08-30T09:37:28.023127223",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": false,
+      "timestamp": "2025-08-30T09:37:29.235104034",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "",
+          "state": "Pending",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "",
+          "executionTime": 0
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": false,
+      "timestamp": "2025-08-30T09:40:30.431055076",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "",
+          "state": "Pending",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "",
+          "executionTime": 0
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": false,
+      "timestamp": "2025-08-30T09:40:31.487937413",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "",
+          "state": "Pending",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "",
+          "executionTime": 0
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": false,
+      "timestamp": "2025-08-30T09:41:00.921617103",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "",
+          "state": "Pending",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "",
+          "executionTime": 0
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": false,
+      "timestamp": "2025-08-30T09:41:02.120523264",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "",
+          "state": "Pending",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "",
+          "executionTime": 0
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": false,
+      "timestamp": "2025-08-30T09:49:38.730841502",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "",
+          "state": "Pending",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "",
+          "executionTime": 0
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": false,
+      "timestamp": "2025-08-30T09:49:39.766578094",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "",
+          "state": "Pending",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "",
+          "executionTime": 0
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": false,
+      "timestamp": "2025-08-30T09:52:44.068763093",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "",
+          "state": "Pending",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "",
+          "executionTime": 0
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": false,
+      "timestamp": "2025-08-30T09:52:45.142862988",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "",
+          "state": "Pending",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "",
+          "executionTime": 0
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": false,
+      "timestamp": "2025-08-30T10:06:33.235969019",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "",
+          "state": "Pending",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "",
+          "executionTime": 0
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": false,
+      "timestamp": "2025-08-30T10:06:34.277076815",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "",
+          "state": "Pending",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "",
+          "executionTime": 0
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": false,
+      "timestamp": "2025-08-30T10:11:42.009217905",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "",
+          "state": "Pending",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "",
+          "executionTime": 0
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": false,
+      "timestamp": "2025-08-30T10:11:43.041539887",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "",
+          "state": "Pending",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "",
+          "executionTime": 0
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": true,
+      "timestamp": "2025-08-30T10:17:18.303885528",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "",
+          "state": "Pending",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "",
+          "executionTime": 0
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": true,
+      "timestamp": "2025-08-30T10:17:19.302490565",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "",
+          "state": "Pending",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "",
+          "executionTime": 0
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": false,
+      "timestamp": "2025-08-30T10:34:09.276936107",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "",
+          "state": "Pending",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "",
+          "executionTime": 0
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": false,
+      "timestamp": "2025-08-30T10:34:10.320776905",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "",
+          "state": "Pending",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "",
+          "executionTime": 0
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": true,
+      "timestamp": "2025-08-30T10:46:13.388857093",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "",
+          "state": "Pending",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "",
+          "executionTime": 0
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": true,
+      "timestamp": "2025-08-30T10:46:14.552974573",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "",
+          "state": "Pending",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "",
+          "executionTime": 0
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": true,
+      "timestamp": "2025-08-30T11:25:35.939763181",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "",
+          "state": "Pending",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "",
+          "executionTime": 0
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": true,
+      "timestamp": "2025-08-30T11:25:37.068406789",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "",
+          "state": "Pending",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "",
+          "executionTime": 0
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": false,
+      "timestamp": "2025-08-30T11:30:12.858539114",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "",
+          "state": "Pending",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "",
+          "executionTime": 0
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": false,
+      "timestamp": "2025-08-30T11:30:13.936333422",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "",
+          "state": "Pending",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "",
+          "executionTime": 0
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": true,
+      "timestamp": "2025-08-30T11:31:36.815770993",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "",
+          "state": "Pending",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "",
+          "executionTime": 0
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": true,
+      "timestamp": "2025-08-30T11:31:37.917676215",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "",
+          "state": "Pending",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "",
+          "executionTime": 0
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": true,
+      "timestamp": "2025-08-30T11:34:08.880990556",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "",
+          "state": "Pending",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "",
+          "executionTime": 0
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": true,
+      "timestamp": "2025-08-30T11:34:09.997576328",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "",
+          "state": "Pending",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "",
+          "executionTime": 0
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": true,
+      "timestamp": "2025-08-30T11:35:13.611517860",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "",
+          "state": "Pending",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "",
+          "executionTime": 0
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": true,
+      "timestamp": "2025-08-30T11:35:14.622851764",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "0",
+          "rawVersion": "0",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "",
+          "state": "Pending",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V0__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "",
+          "executionTime": 0
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": true,
+      "timestamp": "2025-08-30T11:36:20.722807234",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "0",
+          "rawVersion": "0",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "",
+          "state": "Pending",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V0__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "",
+          "executionTime": 0
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": true,
+      "timestamp": "2025-08-30T11:36:21.737616252",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "",
+          "state": "Pending",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "",
+          "executionTime": 0
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": true,
+      "timestamp": "2025-08-30T11:42:01.062923492",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "",
+          "state": "Pending",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "",
+          "executionTime": 0
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": true,
+      "timestamp": "2025-08-30T11:42:02.128346468",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": null,
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "",
+          "state": "Pending",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "",
+          "executionTime": 0
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": true,
+      "timestamp": "2025-08-30T11:45:03.517636794",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "initialSchemaVersion": null,
+      "targetSchemaVersion": "1",
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "executionTime": 37
+        }
+      ],
+      "migrationsExecuted": 1,
+      "success": true,
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "warnings": [],
+      "timestamp": "2025-08-30T11:45:04.561020333",
+      "operation": "migrate",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": "1",
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "2025-08-30T09:45:04.535123Z",
+          "state": "Success",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "steuer_fair_user",
+          "executionTime": 37
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": false,
+      "timestamp": "2025-08-30T11:45:05.685192523",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": "1",
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "2025-08-30T09:45:04.535123Z",
+          "state": "Success",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "steuer_fair_user",
+          "executionTime": 37
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": false,
+      "timestamp": "2025-08-30T11:45:54.146310072",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "initialSchemaVersion": "1",
+      "targetSchemaVersion": null,
+      "schemaName": "",
+      "migrations": [],
+      "migrationsExecuted": 0,
+      "success": true,
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "warnings": [],
+      "timestamp": "2025-08-30T11:45:55.190353507",
+      "operation": "migrate",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": "1",
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "2025-08-30T09:45:04.535123Z",
+          "state": "Success",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "steuer_fair_user",
+          "executionTime": 37
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": false,
+      "timestamp": "2025-08-30T11:45:56.211328729",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": "1",
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "2025-08-30T09:45:04.535123Z",
+          "state": "Success",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "steuer_fair_user",
+          "executionTime": 37
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": false,
+      "timestamp": "2025-08-30T11:46:47.368211652",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "initialSchemaVersion": "1",
+      "targetSchemaVersion": null,
+      "schemaName": "",
+      "migrations": [],
+      "migrationsExecuted": 0,
+      "success": true,
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "warnings": [],
+      "timestamp": "2025-08-30T11:46:48.405677870",
+      "operation": "migrate",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "schemaVersion": "1",
+      "schemaName": "",
+      "migrations": [
+        {
+          "category": "Versioned",
+          "version": "1",
+          "rawVersion": "1",
+          "description": "Initial",
+          "type": "SQL",
+          "installedOnUTC": "2025-08-30T09:45:04.535123Z",
+          "state": "Success",
+          "undoable": "No",
+          "filepath": "/work/projekte/steuer-fair-gemeinsam/apps/api/migrations/V1__Initial.sql",
+          "undoFilepath": "",
+          "installedBy": "steuer_fair_user",
+          "executionTime": 37
+        }
+      ],
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "allSchemasEmpty": false,
+      "timestamp": "2025-08-30T11:47:25.277314771",
+      "operation": "info",
+      "exception": null,
+      "licenseFailed": false
+    },
+    {
+      "initialSchemaVersion": "1",
+      "targetSchemaVersion": null,
+      "schemaName": "",
+      "migrations": [],
+      "migrationsExecuted": 0,
+      "success": true,
+      "flywayVersion": "9.22.3",
+      "database": "steuer_fair",
+      "warnings": [],
+      "timestamp": "2025-08-30T11:47:26.315425903",
+      "operation": "migrate",
+      "exception": null,
+      "licenseFailed": false
+    }
+  ]
+}
