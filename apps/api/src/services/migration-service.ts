@@ -48,7 +48,7 @@ export class MigrationService {
       const response = await this.flyway.info();
 
       if (!response.success) {
-        throw new Error(`Info-Abfrage fehlgeschlagen: ${response.error?.errorCode}`);
+        throw new Error(`Info-Abfrage fehlgeschlagen - error: ${response.error}`);
       }
 
       const migrations = response.flywayResponse?.migrations || [];
