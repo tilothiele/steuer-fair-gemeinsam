@@ -62,7 +62,8 @@ export class MigrationService {
         executionTime: response.additionalDetails?.executionTime
       });
     } catch (error) {
-      console.log('Migration-Status-Prüfung fehlgeschlagen:', (error as any)?.error, error);
+      const e = { ...(error as any)};
+      console.log('Migration-Status-Prüfung fehlgeschlagen:', error, e);
       throw error;
     }
   }
