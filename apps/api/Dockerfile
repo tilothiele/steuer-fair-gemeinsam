@@ -63,6 +63,8 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 
+RUN chown -R nodejs:nodejs /app
+
 USER nodejs
 
 EXPOSE 3001
