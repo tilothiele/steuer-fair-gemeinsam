@@ -6,7 +6,7 @@ export class MigrationService {
   private flyway: Flyway;
 
   constructor() {
-    logger.info('Initialisiere Migration-Service mit Konfiguration:', {
+    console.log('Initialisiere Migration-Service mit Konfiguration:', {
       url: flywayConfig.url,
       user: flywayConfig.user,
       migrationLocations: flywayConfig.migrationLocations,
@@ -20,7 +20,7 @@ export class MigrationService {
    */
   async migrate(): Promise<void> {
     try {
-      logger.info('Starte Datenbank-Migration...');
+      console.log('Starte Datenbank-Migration...');
 
       const response = await this.flyway.migrate();
 
@@ -28,12 +28,12 @@ export class MigrationService {
         throw new Error(`Migration fehlgeschlagen: ${response.error?.errorCode}`);
       }
 
-      logger.info('Datenbank-Migration erfolgreich abgeschlossen', {
+      console.log('Datenbank-Migration erfolgreich abgeschlossen', {
         migrationsExecuted: response.flywayResponse?.migrationsExecuted,
         executionTime: response.additionalDetails?.executionTime
       });
     } catch (error) {
-      logger.error('Datenbank-Migration fehlgeschlagen:', error);
+      console.log('Datenbank-Migration fehlgeschlagen:', error);
       throw error;
     }
   }
@@ -43,7 +43,7 @@ export class MigrationService {
    */
   async info(): Promise<void> {
     try {
-      logger.info('Prüfe Migration-Status...');
+      console.log('Prüfe Migration-Status...');
 
       const response = await this.flyway.info();
 
@@ -55,14 +55,14 @@ export class MigrationService {
       const pendingCount = migrations.filter(m => m.state === 'Pending').length;
       const appliedCount = migrations.filter(m => m.state === 'Success').length;
 
-      logger.info('Migration-Status:', {
+      console.log('Migration-Status:', {
         pendingMigrations: pendingCount,
         appliedMigrations: appliedCount,
         totalMigrations: migrations.length,
         executionTime: response.additionalDetails?.executionTime
       });
     } catch (error) {
-      logger.error('Migration-Status-Prüfung fehlgeschlagen:', error);
+      console.log('Migration-Status-Prüfung fehlgeschlagen:', error);
       throw error;
     }
   }
@@ -72,7 +72,7 @@ export class MigrationService {
    */
   async validate(): Promise<void> {
     try {
-      logger.info('Validiere Migrationen...');
+      console.log('Validiere Migrationen...');
 
       const response = await this.flyway.validate();
 
@@ -81,11 +81,11 @@ export class MigrationService {
       }
 
       // Validierung erfolgreich, wenn keine Fehler aufgetreten sind
-      logger.info('Migration-Validierung erfolgreich', {
+      console.log('Migration-Validierung erfolgreich', {
         executionTime: response.additionalDetails?.executionTime
       });
     } catch (error) {
-      logger.error('Migration-Validierung fehlgeschlagen:', error);
+      console.log('Migration-Validierung fehlgeschlagen:', error);
       throw error;
     }
   }
@@ -105,12 +105,12 @@ export class MigrationService {
 
       const schemasCleaned = response.flywayResponse?.schemasCleaned || [];
 
-      logger.info('Datenbank-Bereinigung erfolgreich', {
+      console.log('Datenbank-Bereinigung erfolgreich', {
         schemasCleaned,
         executionTime: response.additionalDetails?.executionTime
       });
     } catch (error) {
-      logger.error('Datenbank-Bereinigung fehlgeschlagen:', error);
+      console.log('Datenbank-Bereinigung fehlgeschlagen:', error);
       throw error;
     }
   }
@@ -123,21 +123,21 @@ export class MigrationService {
       const response = await this.flyway.info();
 
       if (!response.success) {
-        logger.error('Prüfung ausstehender Migrationen fehlgeschlagen:', response.error);
+        console.log('Prüfung ausstehender Migrationen fehlgeschlagen:', response.error);
         return false;
       }
 
       const migrations = response.flywayResponse?.migrations || [];
       const hasPending = migrations.some(m => m.state === 'Pending');
 
-      logger.info('Ausstehende Migrationen geprüft', {
+      console.log('Ausstehende Migrationen geprüft', {
         hasPending,
         totalMigrations: migrations.length
       });
 
       return hasPending;
     } catch (error) {
-      logger.error('Prüfung ausstehender Migrationen fehlgeschlagen:', error);
+      console.log('Prüfung ausstehender Migrationen fehlgeschlagen:', error);
       return false;
     }
   }
@@ -147,7 +147,7 @@ export class MigrationService {
    */
   async baseline(version: string): Promise<void> {
     try {
-      logger.info(`Erstelle Baseline-Migration für Version ${version}...`);
+      console.log(`Erstelle Baseline-Migration für Version ${version}...`);
 
       const response = await this.flyway.baseline();
 
@@ -155,12 +155,12 @@ export class MigrationService {
         throw new Error(`Baseline fehlgeschlagen: ${response.error?.errorCode}`);
       }
 
-      logger.info('Baseline-Migration erfolgreich erstellt', {
+      console.log('Baseline-Migration erfolgreich erstellt', {
         version,
         executionTime: response.additionalDetails?.executionTime
       });
     } catch (error) {
-      logger.error('Baseline-Migration fehlgeschlagen:', error);
+      console.log('Baseline-Migration fehlgeschlagen:', error);
       throw error;
     }
   }
@@ -170,7 +170,7 @@ export class MigrationService {
    */
   async repair(): Promise<void> {
     try {
-      logger.info('Repariere Migration-Probleme...');
+      console.log('Repariere Migration-Probleme...');
 
       const response = await this.flyway.repair();
 
@@ -178,11 +178,11 @@ export class MigrationService {
         throw new Error(`Repair fehlgeschlagen: ${response.error?.errorCode}`);
       }
 
-      logger.info('Migration-Repair erfolgreich abgeschlossen', {
+      console.log('Migration-Repair erfolgreich abgeschlossen', {
         executionTime: response.additionalDetails?.executionTime
       });
     } catch (error) {
-      logger.error('Migration-Repair fehlgeschlagen:', error);
+      console.log('Migration-Repair fehlgeschlagen:', error);
       throw error;
     }
   }
