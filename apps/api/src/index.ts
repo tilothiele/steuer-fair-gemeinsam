@@ -9,13 +9,11 @@ import { taxRoutes } from './routes/tax';
 import { profileRoutes } from './routes/profile';
 import { taxDataRoutes } from './routes/tax-data';
 import { pdfRoutes } from './routes/pdf';
-import { migrationRoutes } from './routes/migration';
 import { errorHandler } from './middleware/errorHandler';
 import { requestLogger } from './middleware/requestLogger';
 import { logger } from './utils/logger';
 import { sessionConfig, keycloak } from './config/keycloak';
 import { testConnection } from './config/database';
-import { MigrationService } from './services/migration-service';
 
 // Load environment variables
 dotenv.config();
@@ -148,7 +146,6 @@ app.use('/api/tax', taxRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/tax-data', taxDataRoutes);
 app.use('/api/pdf', pdfRoutes);
-app.use('/api/migration', migrationRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {
@@ -188,21 +185,6 @@ const startServer = async () => {
     if (!dbConnected) {
       logger.error('Datenbank-Verbindung fehlgeschlagen, Server wird nicht gestartet');
       process.exit(1);
-    }
-
-    // Migration-Service initialisieren (nur wenn USE_FLYWAY=true)
-    const useFlyway = process.env.USE_FLYWAY === 'true';
-    if (useFlyway) {
-      logger.info('Flyway-Migration aktiviert');
-      const migrationService = new MigrationService();
-
-      // Migration-Status prüfen
-      await migrationService.info();
-
-      // Migration ausführen, falls ausstehende Migrationen vorhanden sind
-      await migrationService.migrate();
-    } else {
-      logger.info('Flyway-Migration deaktiviert (USE_FLYWAY nicht auf true gesetzt)');
     }
 
     // Server starten

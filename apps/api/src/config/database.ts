@@ -36,14 +36,3 @@ export const closePool = async (): Promise<void> => {
   await pool.end();
   logger.info('Datenbank-Pool geschlossen');
 };
-
-// Flyway-Konfiguration für node-flyway
-export const flywayConfig = {
-  url: `jdbc:postgresql://${dbConfig.host}:${dbConfig.port}/${dbConfig.database}`,
-  user: dbConfig.user || 'postgres',
-  password: typeof dbConfig.password === 'string' ? dbConfig.password : 'postgres',
-  defaultSchema: 'public',
-  migrationLocations: process.env.FLYWAY_MIGRATION_LOCATIONS
-    ? process.env.FLYWAY_MIGRATION_LOCATIONS.split(',').map(loc => loc.trim())
-    : ['migrations']
-};

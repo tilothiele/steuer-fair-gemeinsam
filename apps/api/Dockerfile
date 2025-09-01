@@ -39,6 +39,7 @@ WORKDIR /app
 ENV NODE_ENV=production
 
 # Install Chrome für Puppeteer
+# Install Java 17 for Flyway
 RUN apk add --no-cache \
     chromium \
     nss \
@@ -46,7 +47,9 @@ RUN apk add --no-cache \
     freetype-dev \
     harfbuzz \
     ca-certificates \
-    ttf-freefont
+    ttf-freefont \
+    openjdk21 curl bash unzip
+
 
 # Setze Chrome-Umgebungsvariablen
 ENV CHROME_BIN=/usr/bin/chromium-browser
