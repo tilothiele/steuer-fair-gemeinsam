@@ -14,6 +14,7 @@ import { requestLogger } from './middleware/requestLogger';
 import { logger } from './utils/logger';
 import { sessionConfig, keycloak } from './config/keycloak';
 import { testConnection } from './config/database';
+import { KnexMigrationService } from './services/knex-migration-service';
 
 // Load environment variables
 dotenv.config();
@@ -185,6 +186,18 @@ const startServer = async () => {
     if (!dbConnected) {
       logger.error('Datenbank-Verbindung fehlgeschlagen, Server wird nicht gestartet');
       process.exit(1);
+    }
+
+    // Knex.js Migrationen ausführen
+    const migrationService = new KnexMigrationService();
+    try {
+      await migrationService.migrateIfNeeded();
+      logger.info('✅ Datenbank-Migration erfolgreich abgeschlossen');
+    } catch (migrationError) {
+      logger.error('❌ Datenbank-Migration fehlgeschlagen:', migrationError);
+      process.exit(1);
+    } finally {
+      await migrationService.closeConnection();
     }
 
     // Server starten

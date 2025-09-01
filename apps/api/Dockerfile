@@ -47,8 +47,7 @@ RUN apk add --no-cache \
     freetype-dev \
     harfbuzz \
     ca-certificates \
-    ttf-freefont \
-    openjdk21 curl bash unzip
+    ttf-freefont
 
 
 # Setze Chrome-Umgebungsvariablen
