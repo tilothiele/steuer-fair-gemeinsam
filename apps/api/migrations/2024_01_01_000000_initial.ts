@@ -2,12 +2,12 @@ import { Knex } from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
   // Prüfe, ob die Tabellen bereits existieren
-  const usersExists = await knex.schema.hasTable('users');
+  const usersExists = await knex.schema.hasTable('user_profiles');
   const taxDataExists = await knex.schema.hasTable('tax_data');
 
   if (!usersExists) {
     // Benutzer-Tabelle
-    await knex.schema.createTable('users', (table) => {
+    await knex.schema.createTable('user_profiles', (table) => {
       table.increments('id').primary();
       table.string('login_id', 255).unique().notNullable();
       table.string('name', 255);
@@ -15,18 +15,18 @@ export async function up(knex: Knex): Promise<void> {
       table.timestamp('created_at').defaultTo(knex.fn.now());
       table.timestamp('updated_at').defaultTo(knex.fn.now());
     });
-    console.log('✅ users Tabelle erstellt');
+    console.log('✅ user_profiles Tabelle erstellt');
   } else {
-    console.log('ℹ️  users Tabelle existiert bereits');
+    console.log('ℹ️  user_profiles Tabelle existiert bereits');
   }
 
   if (!taxDataExists) {
     // Steuerdaten-Tabelle
     await knex.schema.createTable('tax_data', (table) => {
       table.increments('id').primary();
-      table.integer('user_id').notNullable().references('id').inTable('users').onDelete('CASCADE');
+      table.integer('user_id').notNullable().references('id').inTable('user_profiles').onDelete('CASCADE');
       table.integer('year').notNullable();
-      
+
       // Partner A Daten
       table.decimal('partner_a_einkommen', 12, 2);
       table.decimal('partner_a_steuern', 12, 2);
@@ -35,7 +35,7 @@ export async function up(knex: Knex): Promise<void> {
       table.decimal('partner_a_haette_zahlen_muessen', 12, 2);
       table.decimal('partner_a_hat_gezahlt', 12, 2);
       table.decimal('partner_a_differenz', 12, 2);
-      
+
       // Partner B Daten
       table.decimal('partner_b_einkommen', 12, 2);
       table.decimal('partner_b_steuern', 12, 2);
@@ -44,7 +44,7 @@ export async function up(knex: Knex): Promise<void> {
       table.decimal('partner_b_haette_zahlen_muessen', 12, 2);
       table.decimal('partner_b_hat_gezahlt', 12, 2);
       table.decimal('partner_b_differenz', 12, 2);
-      
+
       // Gemeinsame Daten
       table.decimal('gemeinsames_einkommen', 12, 2);
       table.decimal('gemeinsame_steuern', 12, 2);
@@ -53,13 +53,13 @@ export async function up(knex: Knex): Promise<void> {
       table.decimal('gemeinsame_haette_zahlen_muessen', 12, 2);
       table.decimal('gemeinsame_hat_gezahlt', 12, 2);
       table.decimal('gemeinsame_differenz', 12, 2);
-      
+
       // Berechnungsmodus
       table.string('calculation_mode', 50).defaultTo('calculated');
-      
+
       table.timestamp('created_at').defaultTo(knex.fn.now());
       table.timestamp('updated_at').defaultTo(knex.fn.now());
-      
+
       // Unique constraint
       table.unique(['user_id', 'year']);
     });
@@ -77,7 +77,7 @@ export async function up(knex: Knex): Promise<void> {
   }
 
   try {
-    await knex.raw('CREATE INDEX IF NOT EXISTS idx_users_login_id ON users(login_id)');
+    await knex.raw('CREATE INDEX IF NOT EXISTS idx_users_login_id ON user_profiles(login_id)');
     console.log('✅ Index idx_users_login_id erstellt/überprüft');
   } catch (error) {
     console.log('ℹ️  Index idx_users_login_id existiert bereits');
@@ -103,9 +103,9 @@ export async function up(knex: Knex): Promise<void> {
   try {
     await knex.raw(`
       DROP TRIGGER IF EXISTS update_users_updated_at ON users;
-      CREATE TRIGGER update_users_updated_at 
-          BEFORE UPDATE ON users 
-          FOR EACH ROW 
+      CREATE TRIGGER update_users_updated_at
+          BEFORE UPDATE ON users
+          FOR EACH ROW
           EXECUTE FUNCTION update_updated_at_column();
     `);
     console.log('✅ Trigger update_users_updated_at erstellt/aktualisiert');
@@ -117,9 +117,9 @@ export async function up(knex: Knex): Promise<void> {
   try {
     await knex.raw(`
       DROP TRIGGER IF EXISTS update_tax_data_updated_at ON tax_data;
-      CREATE TRIGGER update_tax_data_updated_at 
-          BEFORE UPDATE ON tax_data 
-          FOR EACH ROW 
+      CREATE TRIGGER update_tax_data_updated_at
+          BEFORE UPDATE ON tax_data
+          FOR EACH ROW
           EXECUTE FUNCTION update_updated_at_column();
     `);
     console.log('✅ Trigger update_tax_data_updated_at erstellt/aktualisiert');
@@ -131,12 +131,12 @@ export async function up(knex: Knex): Promise<void> {
 export async function down(knex: Knex): Promise<void> {
   // Trigger entfernen
   await knex.raw('DROP TRIGGER IF EXISTS update_tax_data_updated_at ON tax_data');
-  await knex.raw('DROP TRIGGER IF EXISTS update_users_updated_at ON users');
-  
+  await knex.raw('DROP TRIGGER IF EXISTS update_users_updated_at ON user_profiles');
+
   // Funktion entfernen
   await knex.raw('DROP FUNCTION IF EXISTS update_updated_at_column()');
-  
+
   // Tabellen entfernen
   await knex.schema.dropTableIfExists('tax_data');
-  await knex.schema.dropTableIfExists('users');
+  await knex.schema.dropTableIfExists('user_profiles');
 }
