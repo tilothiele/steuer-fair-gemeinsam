@@ -104,7 +104,7 @@ export async function up(knex: Knex): Promise<void> {
     await knex.raw(`
       DROP TRIGGER IF EXISTS update_users_updated_at ON users;
       CREATE TRIGGER update_users_updated_at
-          BEFORE UPDATE ON users
+          BEFORE UPDATE ON user_profiles
           FOR EACH ROW
           EXECUTE FUNCTION update_updated_at_column();
     `);
