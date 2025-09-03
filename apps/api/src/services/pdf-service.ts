@@ -224,59 +224,63 @@ export class PdfService {
         <style>
           body {
             font-family: Arial, sans-serif;
-            line-height: 1.6;
+            line-height: 1.08;
             color: #333;
             margin: 0;
-            padding: 20px;
+            padding: 10px;
+            font-size: 13px;
           }
           .header {
             text-align: center;
-            border-bottom: 2px solid #2563eb;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
+            border-bottom: 1px solid #2563eb;
+            padding-bottom: 3px;
+            margin-bottom: 10px;
           }
           .header h1 {
             color: #2563eb;
             margin: 0;
-            font-size: 24px;
+            font-size: 22px;
           }
           .header p {
-            margin: 5px 0;
+            margin: 3px 0;
             color: #666;
+            font-size: 13px;
           }
           .section {
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             page-break-inside: avoid;
           }
           .section h2 {
             color: #2563eb;
             border-bottom: 1px solid #e5e7eb;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+            font-size: 18px;
           }
           .partner-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 20px;
+            gap: 8px;
+            margin-bottom: 15px;
           }
           .partner-card {
             border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            padding: 15px;
+            border-radius: 5px;
+            padding: 10px;
             background-color: #f9fafb;
           }
           .partner-card h3 {
-            margin: 0 0 15px 0;
+            margin: 0 0 10px 0;
             color: #374151;
-            font-size: 18px;
+            font-size: 15px;
           }
           .data-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 8px;
-            padding: 5px 0;
+            margin-bottom: 2px;
+            padding: 1px 0;
             border-bottom: 1px solid #f3f4f6;
+            font-size: 12px;
           }
           .data-row:last-child {
             border-bottom: none;
@@ -291,20 +295,22 @@ export class PdfService {
           }
           .result-section {
             background-color: #f0f9ff;
-            border: 2px solid #0ea5e9;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 20px 0;
+            border: 1px solid #0ea5e9;
+            border-radius: 5px;
+            padding: 12px;
+            margin: 15px 0;
           }
           .result-section h3 {
             color: #0c4a6e;
-            margin: 0 0 15px 0;
+            margin: 0 0 10px 0;
+            font-size: 15px;
           }
           .plausibility {
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 15px;
+            padding: 8px;
+            border-radius: 4px;
+            margin-bottom: 12px;
             font-weight: 600;
+            font-size: 12px;
           }
           .plausibility.success {
             background-color: #dcfce7;
@@ -319,25 +325,26 @@ export class PdfService {
           .calculation-results {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            gap: 8px;
           }
           .partner-result {
             background-color: white;
             border: 1px solid #e5e7eb;
-            border-radius: 5px;
-            padding: 15px;
+            border-radius: 4px;
+            padding: 10px;
           }
           .partner-result h4 {
-            margin: 0 0 10px 0;
+            margin: 0 0 8px 0;
             color: #374151;
+            font-size: 14px;
           }
           .footer {
-            margin-top: 40px;
-            padding-top: 20px;
+            margin-top: 15px;
+            padding-top: 8px;
             border-top: 1px solid #e5e7eb;
             text-align: center;
             color: #6b7280;
-            font-size: 12px;
+            font-size: 10px;
           }
           @media print {
             body { margin: 0; }
@@ -348,10 +355,8 @@ export class PdfService {
       <body>
         <div class="header">
           <h1>Steuer-Fair-Gemeinsam</h1>
-          <p>Faire Aufteilung der Steuerlast für Ehepaare</p>
           <p><strong>Veranlagungsjahr:</strong> ${year}</p>
           ${userName ? `<p><strong>Name:</strong> ${userName}</p>` : ''}
-          ${userSteuernummer ? `<p><strong>Steuernummer:</strong> ${userSteuernummer}</p>` : ''}
           <p><strong>Erstellt am:</strong> ${new Date().toLocaleDateString('de-DE')}</p>
         </div>
 
@@ -361,10 +366,6 @@ export class PdfService {
           <div class="partner-grid">
             <div class="partner-card">
               <h3>Partner A${partnerA.name ? ` - ${partnerA.name}` : ''}</h3>
-              <div class="data-row">
-                <span class="label">Name:</span>
-                <span class="value">${partnerA.name || 'Nicht angegeben'}</span>
-              </div>
               <div class="data-row">
                 <span class="label">Steuer-ID:</span>
                 <span class="value">${partnerA.steuerId || 'Nicht angegeben'}</span>
@@ -377,7 +378,6 @@ export class PdfService {
                 <span class="label">Steuerklasse:</span>
                 <span class="value">${partnerA.taxClass}</span>
               </div>
-
               <div class="data-row">
                 <span class="label">Festgesetzte Einkommensteuer:</span>
                 <span class="value">${formatCurrency(partnerA.fee)}</span>
@@ -403,10 +403,6 @@ export class PdfService {
             <div class="partner-card">
               <h3>Partner B${partnerB.name ? ` - ${partnerB.name}` : ''}</h3>
               <div class="data-row">
-                <span class="label">Name:</span>
-                <span class="value">${partnerB.name || 'Nicht angegeben'}</span>
-              </div>
-              <div class="data-row">
                 <span class="label">Steuer-ID:</span>
                 <span class="value">${partnerB.steuerId || 'Nicht angegeben'}</span>
               </div>
@@ -418,7 +414,6 @@ export class PdfService {
                 <span class="label">Steuerklasse:</span>
                 <span class="value">${partnerB.taxClass}</span>
               </div>
-
               <div class="data-row">
                 <span class="label">Festgesetzte Einkommensteuer:</span>
                 <span class="value">${formatCurrency(partnerB.fee)}</span>
