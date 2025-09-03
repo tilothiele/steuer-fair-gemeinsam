@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { PdfService } from '../services/pdf-service';
 import { TaxCalculationRequestSchema } from '@steuer-fair/shared';
-import { TaxCalculator } from '@steuer-fair/shared';
+import { TaxCalculationService } from '@steuer-fair/shared';
 import { logger } from '../utils/logger';
 import { authenticateToken, AuthenticatedRequest } from '../middleware/auth';
 
@@ -37,18 +37,43 @@ router.post('/download', authenticateToken, async (req: AuthenticatedRequest, re
       });
     }
 
-    // Führe die echte Steuerberechnung durch
-    const result = TaxCalculator.calculateFairSplit(partnerA, partnerB, jointData);
+//    console.log(partnerA, partnerB, jointData);
 
-    // Generiere PDF
+    // Neue Logik für PDF-Route:
+    let updatedPartnerA = partnerA;
+    let updatedPartnerB = partnerB;
+    let updatedJointData = jointData;
+
+    // Nur berechnen wenn NICHT manuell eingegeben
+    if (jointData.calculationMode !== 'manual') {
+      console.log('Berechne Steuern automatisch');
+      // Berechne Steuern automatisch
+      const partnerATaxes = TaxCalculationService.calculateIndividualTax(partnerA);
+      const partnerBTaxes = TaxCalculationService.calculateIndividualTax(partnerB);
+      const jointTaxes = TaxCalculationService.calculateJointTax(jointData);
+
+      // Aktualisiere Partner mit berechneten Werten
+      updatedPartnerA = { ...partnerA, fee: partnerATaxes.fee, fse: partnerATaxes.fse };
+      updatedPartnerB = { ...partnerB, fee: partnerBTaxes.fee, fse: partnerBTaxes.fse };
+      updatedJointData = { ...jointData, gfe: jointTaxes.gfe, gfs: jointTaxes.gfs };
+    } else {
+      console.log('Berechne Steuern manuell');
+    }
+
+//    console.log(updatedPartnerA, updatedPartnerB, updatedJointData);
+    // Führe die faire Aufteilung durch (mit korrekten Werten)
+    const result = TaxCalculationService.calculateFairSplit(updatedPartnerA, updatedPartnerB, updatedJointData);
+
+//    console.log(updatedPartnerA, updatedPartnerB, updatedJointData);
+    // Generiere PDF mit aktualisierten Daten
     const pdfBuffer = await PdfService.generateTaxCalculationPdf(
-      partnerA,
-      partnerB,
-      jointData,
-      result,
+      updatedPartnerA,    // Korrigiert
+      updatedPartnerB,    // Korrigiert
+      updatedJointData,   // Korrigiert
+      result,             // Berechnetes Ergebnis
       year,
       user?.id || 'unknown',
-      undefined, // steuernummer
+      undefined,
       user?.name
     );
 

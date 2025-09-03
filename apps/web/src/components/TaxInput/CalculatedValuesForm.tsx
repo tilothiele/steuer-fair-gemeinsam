@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { TaxPartner } from '@steuer-fair/shared';
+import { TaxCalculationService } from '@steuer-fair/shared';
 
 interface CalculatedValuesFormProps {
   partner: TaxPartner;
@@ -12,9 +13,8 @@ export const CalculatedValuesForm: React.FC<CalculatedValuesFormProps> = ({
   partner,
   title
 }) => {
-  // Berechnete Werte
-  const haetteZahlenMuessen = partner.fee + partner.fse; // FEE + FSE
-  const hatGezahlt = partner.gl + partner.gve + partner.gs; // GL + GVE + GS
+  // Verwende die zentrale Service-Klasse für konsistente Berechnungen
+  const displayValues = TaxCalculationService.calculatePartnerDisplayValues(partner);
 
   return (
     <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
@@ -28,7 +28,7 @@ export const CalculatedValuesForm: React.FC<CalculatedValuesFormProps> = ({
           <label className="form-label text-purple-800">Hätte zahlen müssen (€)</label>
           <input
             type="number"
-            value={haetteZahlenMuessen.toFixed(2)}
+            value={displayValues.haetteZahlenMuessen.toFixed(2)}
             readOnly
             className="input-field bg-white text-purple-800 font-medium"
           />
@@ -42,7 +42,7 @@ export const CalculatedValuesForm: React.FC<CalculatedValuesFormProps> = ({
           <label className="form-label text-purple-800">Hat gezahlt (€)</label>
           <input
             type="number"
-            value={hatGezahlt.toFixed(2)}
+            value={displayValues.hatGezahlt.toFixed(2)}
             readOnly
             className="input-field bg-white text-purple-800 font-medium"
           />
@@ -56,12 +56,12 @@ export const CalculatedValuesForm: React.FC<CalculatedValuesFormProps> = ({
           <label className="form-label text-purple-800">Differenz (€)</label>
           <input
             type="number"
-            value={(haetteZahlenMuessen - hatGezahlt).toFixed(2)}
+            value={displayValues.differenz.toFixed(2)}
             readOnly
             className={`input-field bg-white font-medium ${
-              haetteZahlenMuessen - hatGezahlt > 0 
+              displayValues.differenz > 0 
                 ? 'text-red-800' 
-                : haetteZahlenMuessen - hatGezahlt < 0 
+                : displayValues.differenz < 0 
                 ? 'text-green-800' 
                 : 'text-purple-800'
             }`}

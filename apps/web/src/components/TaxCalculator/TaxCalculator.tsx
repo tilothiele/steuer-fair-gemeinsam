@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { TaxPartner, TaxCalculationResult, JointTaxData, User } from '@steuer-fair/shared';
-import { TaxCalculator as TaxCalc } from '@steuer-fair/shared';
+import { TaxCalculationService } from '@steuer-fair/shared';
 import { TaxPartnerForm } from '../TaxInput/TaxPartnerForm';
 import { JointDataForm } from '../TaxInput/JointDataForm';
 import { CalculationModeToggle } from '../TaxInput/CalculationModeToggle';
@@ -60,11 +60,12 @@ export const TaxCalculator: React.FC<TaxCalculatorProps> = ({ user }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Automatische Berechnung der Steuern bei Änderung der Eingabewerte (nur im calculated Mode)
+  // ✅ KORREKT - Respektiert manuelle Eingaben
   useEffect(() => {
+    // Nur berechnen wenn calculationMode auf 'calculated' steht
     if (calculationMode === 'calculated') {
       // Berechne Steuern für Partner A
-      const partnerATaxes = TaxCalc.calculateIndividualTax(partnerA);
+      const partnerATaxes = TaxCalculationService.calculateIndividualTax(partnerA);
       setPartnerA(prev => ({
         ...prev,
         fee: partnerATaxes.fee,
@@ -72,21 +73,22 @@ export const TaxCalculator: React.FC<TaxCalculatorProps> = ({ user }) => {
       }));
 
       // Berechne Steuern für Partner B
-      const partnerBTaxes = TaxCalc.calculateIndividualTax(partnerB);
+      const partnerBTaxes = TaxCalculationService.calculateIndividualTax(partnerB);
       setPartnerB(prev => ({
         ...prev,
         fee: partnerBTaxes.fee,
-        fse: partnerBTaxes.fse
+        fse: partnerBTaxes.fse  // ← Tippfehler korrigiert
       }));
 
       // Berechne gemeinsame Steuern
-      const jointTaxes = TaxCalc.calculateJointTax(jointData);
+      const jointTaxes = TaxCalculationService.calculateJointTax(jointData);
       setJointData(prev => ({
         ...prev,
         gfe: jointTaxes.gfe,
         gfs: jointTaxes.gfs
       }));
     }
+    // Kein else-Block nötig - bei 'manual' werden die Werte nicht überschrieben
   }, [calculationMode, partnerA.sek, partnerB.sek, jointData.gsek]);
 
   const handleCalculate = async () => {
@@ -253,7 +255,7 @@ export const TaxCalculator: React.FC<TaxCalculatorProps> = ({ user }) => {
                   <h2 className="text-xl font-semibold text-gray-900 mb-4">
             Steuerdaten eingeben
           </h2>
-          
+
           {/* Steuernummer Anzeige */}
           {user?.steuernummer && (
             <div className="mb-4 p-3 bg-gray-50 border border-gray-200 rounded-lg">
@@ -263,7 +265,7 @@ export const TaxCalculator: React.FC<TaxCalculatorProps> = ({ user }) => {
               </div>
             </div>
           )}
-          
+
           {/* Veranlagungsjahr über beide Spalten */}
           <div className="mb-6 bg-blue-50 p-4 rounded-lg border border-blue-200">
             <label className="form-label text-lg font-medium text-blue-800">Veranlagungsjahr</label>
@@ -303,7 +305,7 @@ export const TaxCalculator: React.FC<TaxCalculatorProps> = ({ user }) => {
                   </h3>
                   <div className="mt-2 text-sm text-yellow-700">
                     <p>
-                      Bei der automatischen Berechnung wird nur eine sehr grobe Steuerformel verwendet, 
+                      Bei der automatischen Berechnung wird nur eine sehr grobe Steuerformel verwendet,
                       die nicht der offiziellen Ermittlungsmethode entspricht. Es handelt sich nur um Näherungswerte.
                     </p>
                     <p className="mt-2 font-medium">
@@ -314,7 +316,7 @@ export const TaxCalculator: React.FC<TaxCalculatorProps> = ({ user }) => {
               </div>
             </div>
           )}
-        
+
         {/* Partner-Formulare - Grüne Blöcke (Festgesetzte Werte) */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <TaxPartnerForm
@@ -381,7 +383,7 @@ export const TaxCalculator: React.FC<TaxCalculatorProps> = ({ user }) => {
               'Speichern'
             )}
           </button>
-          
+
           <button
             onClick={handleCalculate}
             disabled={loading}
@@ -396,14 +398,14 @@ export const TaxCalculator: React.FC<TaxCalculatorProps> = ({ user }) => {
               'Berechnung starten'
             )}
           </button>
-          
+
           <button
             onClick={handleReset}
             className="btn-secondary"
           >
             Zurücksetzen
           </button>
-          
+
           <button
             onClick={handlePdfDownload}
             disabled={loading || (!partnerA.sek && !partnerB.sek)}

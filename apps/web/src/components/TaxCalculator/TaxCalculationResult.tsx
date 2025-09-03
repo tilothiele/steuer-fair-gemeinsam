@@ -12,6 +12,46 @@ interface TaxCalculationResultProps {
   jointData: JointTaxData;
 }
 
+// Neue wiederverwendbare PartnerCard-Komponente
+interface PartnerCardProps {
+  partner: TaxPartner;
+  partnerResult: {
+    haetteZahlenMuessen: number;
+    mussNunZahlen: number;
+    hatGezahlt: number;
+    differenz: number;
+  };
+  partnerName: string;
+}
+
+const PartnerCard: React.FC<PartnerCardProps> = ({ partner, partnerResult, partnerName }) => (
+  <div className="bg-gray-50 rounded-lg p-4">
+    <h4 className="font-medium text-gray-900 mb-2">
+      {partner.name || partnerName}
+    </h4>
+    <div className="space-y-2">
+      <div className="flex justify-between">
+        <span className="text-gray-600">Hätte zahlen müssen:</span>
+        <span className="font-medium">{formatCurrency(partnerResult.haetteZahlenMuessen)}</span>
+      </div>
+      <div className="flex justify-between">
+        <span className="text-gray-600">Muss nun zahlen:</span>
+        <span className="font-medium">{formatCurrency(partnerResult.mussNunZahlen)}</span>
+      </div>
+      <div className="flex justify-between">
+        <span className="text-gray-600">Hat gezahlt:</span>
+        <span className="font-medium">{formatCurrency(partnerResult.hatGezahlt)}</span>
+      </div>
+      <div className="flex justify-between border-t border-gray-200 pt-2">
+        <span className="text-gray-900 font-medium">Differenz:</span>
+        <span className={`font-bold ${partnerResult.differenz >= 0 ? 'text-success-600' : 'text-red-600'}`}>
+          {formatCurrency(partnerResult.differenz)}
+        </span>
+      </div>
+    </div>
+  </div>
+);
+
 export const TaxCalculationResult: React.FC<TaxCalculationResultProps> = ({
   result,
   partnerA,
@@ -94,61 +134,21 @@ export const TaxCalculationResult: React.FC<TaxCalculationResultProps> = ({
         <h3 className="text-lg font-semibold text-gray-900 mb-4">
           Faire Aufteilung der Steuerlast
         </h3>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Partner A */}
-          <div className="bg-gray-50 rounded-lg p-4">
-            <h4 className="font-medium text-gray-900 mb-2">
-              {partnerA.name || 'Partner A'}
-            </h4>
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span className="text-gray-600">Hätte zahlen müssen:</span>
-                <span className="font-medium">{formatCurrency(result.partnerA.haetteZahlenMuessen)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Muss nun zahlen:</span>
-                <span className="font-medium">{formatCurrency(result.partnerA.mussNunZahlen)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Hat gezahlt:</span>
-                <span className="font-medium">{formatCurrency(result.partnerA.hatGezahlt)}</span>
-              </div>
-              <div className="flex justify-between border-t border-gray-200 pt-2">
-                <span className="text-gray-900 font-medium">Differenz:</span>
-                <span className={`font-bold ${result.partnerA.differenz >= 0 ? 'text-success-600' : 'text-red-600'}`}>
-                  {formatCurrency(result.partnerA.differenz)}
-                </span>
-              </div>
-            </div>
-          </div>
+          <PartnerCard
+            partner={partnerA}
+            partnerResult={result.partnerA}
+            partnerName="Partner A"
+          />
 
           {/* Partner B */}
-          <div className="bg-gray-50 rounded-lg p-4">
-            <h4 className="font-medium text-gray-900 mb-2">
-              {partnerB.name || 'Partner B'}
-            </h4>
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span className="text-gray-600">Hätte zahlen müssen:</span>
-                <span className="font-medium">{formatCurrency(result.partnerB.haetteZahlenMuessen)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Muss nun zahlen:</span>
-                <span className="font-medium">{formatCurrency(result.partnerB.mussNunZahlen)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Hat gezahlt:</span>
-                <span className="font-medium">{formatCurrency(result.partnerB.hatGezahlt)}</span>
-              </div>
-              <div className="flex justify-between border-t border-gray-200 pt-2">
-                <span className="text-gray-900 font-medium">Differenz:</span>
-                <span className={`font-bold ${result.partnerB.differenz >= 0 ? 'text-success-600' : 'text-red-600'}`}>
-                  {formatCurrency(result.partnerB.differenz)}
-                </span>
-              </div>
-            </div>
-          </div>
+          <PartnerCard
+            partner={partnerB}
+            partnerResult={result.partnerB}
+            partnerName="Partner B"
+          />
         </div>
       </div>
 
@@ -157,7 +157,7 @@ export const TaxCalculationResult: React.FC<TaxCalculationResultProps> = ({
         <h3 className="text-lg font-semibold text-gray-900 mb-4">
           Berechnungsdetails
         </h3>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="text-center">
             <p className="text-sm text-gray-600">Steuerpflichtiges Einkommen A</p>

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { TaxCalculator } from '@steuer-fair/shared';
+import { TaxCalculationService } from '@steuer-fair/shared';
 import { TaxCalculationRequestSchema, TaxCalculationResponse } from '@steuer-fair/shared';
 import { logger } from '../utils/logger';
 import { authenticateToken, AuthenticatedRequest } from '../middleware/auth';
@@ -17,7 +17,7 @@ router.post('/calculate', authenticateToken, async (req: AuthenticatedRequest, r
     const { partnerA, partnerB, jointData, year } = validatedData;
 
     // Validiere Partner-Daten
-    const validationErrors = TaxCalculator.validatePartners(partnerA, partnerB, jointData);
+    const validationErrors = TaxCalculationService.validatePartners(partnerA, partnerB, jointData);
     if (validationErrors.length > 0) {
       return res.status(400).json({
         success: false,
@@ -26,18 +26,25 @@ router.post('/calculate', authenticateToken, async (req: AuthenticatedRequest, r
       });
     }
 
-    // Berechne Steuern automatisch
-    const partnerATaxes = TaxCalculator.calculateIndividualTax(partnerA);
-    const partnerBTaxes = TaxCalculator.calculateIndividualTax(partnerB);
-    const jointTaxes = TaxCalculator.calculateJointTax(jointData);
+    let updatedPartnerA = partnerA;
+    let updatedPartnerB = partnerB;
+    let updatedJointData = jointData;
 
-    // Aktualisiere Partner mit berechneten Werten
-    const updatedPartnerA = { ...partnerA, fee: partnerATaxes.fee, fse: partnerATaxes.fse };
-    const updatedPartnerB = { ...partnerB, fee: partnerBTaxes.fee, fse: partnerBTaxes.fse };
-    const updatedJointData = { ...jointData, gfe: jointTaxes.gfe, gfs: jointTaxes.gfs };
+    // Nur berechnen wenn NICHT manuell eingegeben
+    if (jointData.calculationMode !== 'manual') {
+      // Berechne Steuern automatisch
+      const partnerATaxes = TaxCalculationService.calculateIndividualTax(partnerA);
+      const partnerBTaxes = TaxCalculationService.calculateIndividualTax(partnerB);
+      const jointTaxes = TaxCalculationService.calculateJointTax(jointData);
+
+      // Aktualisiere Partner mit berechneten Werten
+      updatedPartnerA = { ...partnerA, fee: partnerATaxes.fee, fse: partnerATaxes.fse };
+      updatedPartnerB = { ...partnerB, fee: partnerBTaxes.fee, fse: partnerBTaxes.fse };
+      updatedJointData = { ...jointData, gfe: jointTaxes.gfe, gfs: jointTaxes.gfs };
+    }
 
     // Berechne faire Aufteilung
-    const result = TaxCalculator.calculateFairSplit(updatedPartnerA, updatedPartnerB, updatedJointData);
+    const result = TaxCalculationService.calculateFairSplit(updatedPartnerA, updatedPartnerB, updatedJointData);
 
     // Log erfolgreiche Berechnung
     logger.info({

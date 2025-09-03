@@ -2,5 +2,8 @@
 export * from './types/tax-models';
 
 // Utils
-export { TaxCalculator } from './utils/tax-calculator';
-export { UserService } from './utils/user-service';
+export * from './utils/tax-calculator';
+export * from './services/tax-calculation-service';
+
+// User Service
+export * from './utils/user-service';
